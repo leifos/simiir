@@ -1,0 +1,41 @@
+<userConfiguration id="iftuser">
+
+	<queryGenerator class="TriTermQueryGenerator">
+		<attribute name="id" type="integer" value="13" is_argument="false" /><attribute name="stopword_file" type="string" value="../example_data/terms/stopwords.txt" is_argument="true" />
+	</queryGenerator>
+
+	<textClassifiers>
+		<snippetClassifier class="InformedTrecTextClassifier">
+            <attribute name="qrel_file" type="string" value="../example_data/qrels/trec2005.qrels.all" is_argument="true" />
+            <attribute name="rprob" type="float" value="0.55" is_argument="true" />
+            <attribute name="nprob" type="float" value="0.25" is_argument="true" />
+		</snippetClassifier>
+
+		<documentClassifier class="InformedTrecTextClassifier">
+            <attribute name="qrel_file" type="string" value="../example_data/qrels/trec2005.qrels.all" is_argument="true" />
+            <attribute name="rprob" type="float" value="0.75" is_argument="true" />
+            <attribute name="nprob" type="float" value="0.55" is_argument="true" />
+		</documentClassifier>
+	</textClassifiers>
+
+	<stoppingDecisionMaker class="IftBasedDecisionMaker">
+        <attribute name="rank_threshold" type="integer" value="3" is_argument="true" />
+        <attribute name="gain_threshold" type="float" value="0.02" is_argument="true" />
+        <attribute name="discount" type="float" value="0.5" is_argument="true" />
+        <attribute name="query_time" type="float" value="15.1" is_argument="true" />
+        <attribute name="doc_time" type="float" value="21.45" is_argument="true" />
+	</stoppingDecisionMaker>
+
+	<logger class="FixedCostLogger">
+		<attribute name="time_limit" type="integer" value="600" is_argument="true" />
+		<attribute name="query_cost" type="integer" value="10" is_argument="true" />
+		<attribute name="document_cost" type="integer" value="20" is_argument="true" />
+		<attribute name="snippet_cost" type="integer" value="3" is_argument="true" />
+		<attribute name="serp_results_cost" type="integer" value="5" is_argument="true" />
+		<attribute name="mark_document_cost" type="integer" value="3" is_argument="true" />
+	</logger>
+
+	<searchContext class="SearchContextRevisedRelevance">
+	</searchContext>
+
+</userConfiguration>

@@ -1,0 +1,31 @@
+<userConfiguration id="trecuser">
+	
+	<queryGenerator class="TrecTopicQueryGenerator">
+		<attribute name="stopword_file" type="string" value="../example_data/terms/stopwords.txt" is_argument="true" />
+	</queryGenerator>
+	
+	<textClassifiers>
+		<snippetClassifier class="TrecTextClassifier">
+		</snippetClassifier>
+
+		<documentClassifier class="TrecTextClassifier">
+  		</documentClassifier>
+	</textClassifiers>
+	
+	<stoppingDecisionMaker class="FixedDepthDecisionMaker">
+        <attribute name="depth" type="integer" value="1000" is_argument="true" />
+	</stoppingDecisionMaker>
+	
+	<logger class="FixedCostLogger">
+		<attribute name="time_limit" type="integer" value="600" is_argument="true" />
+		<attribute name="query_cost" type="integer" value="10" is_argument="true" />
+		<attribute name="document_cost" type="integer" value="20" is_argument="true" />
+		<attribute name="snippet_cost" type="integer" value="3" is_argument="true" />
+		<attribute name="serp_results_cost" type="integer" value="5" is_argument="true" />
+		<attribute name="mark_document_cost" type="integer" value="3" is_argument="true" />
+	</logger>
+	
+	<searchContext class="SearchContextRevisedRelevance">
+	</searchContext>
+	
+</userConfiguration>
