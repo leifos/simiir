@@ -1,0 +1,55 @@
+<simulation baseID="base_id" outputDir="/output/dir/">
+	
+	<topics>
+		<topic id="307" filename="data/topics/topic.307" qrelsFilename="data/trec2005.qrels.307" />
+	</topics>
+	
+	<user baseID="{{queryGenerator}}">
+		
+		<queryGenerator>
+			
+			<class name="BiTermQueryGenerator">
+				<attribute name="stopword_file" type="string" value="data/stopwords.txt" is_argument="true" />
+				<attribute name="depth" type="int" value="5" is_argument="true" />
+			</class>
+			
+			<class name="TriTermQueryGenerator">
+				<attribute name="stopword_file" type="string" value="data/stopwords.txt" is_argument="true" />
+				<attribute name="depth" type="int" value="5" is_argument="true" />
+			</class>
+			
+			<class name="PredeterminedQueryGenerator">
+				<attribute name="query_file" type="string" value="data/queries.txt" is_argument="true" />
+				<attribute name="user" type="int" value="1" is_argument="true" />
+			</class>
+			
+		</queryGenerator>
+		
+		<textClassifiers>
+			<snippetClassifier>
+				<class name="SnippetClassifier">
+					<attribute name="stopword_file" type="string" value="data/stopwords.txt" is_argument="true" />
+				</class>
+			</snippetClassifier>
+		
+			<documentClassifier>
+				<class name="DocumentClassifier">
+					<attribute name="stopword_file" type="string" value="data/stopwords.txt" is_argument="true" />
+				</class>
+			</documentClassifier>
+		</textClassifiers>
+		
+		<decisionMaker>
+			<class name="DocumentClassifier">
+				<attribute name="stopword_file" type="string" value="data/stopwords.txt" is_argument="true" />
+			</class>
+		</decisionMaker>
+		
+		<logger>
+			<class name="SomeLogger">
+			</class>
+		</logger>
+		
+	</user>
+
+</simulation>

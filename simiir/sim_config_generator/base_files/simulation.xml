@@ -1,0 +1,22 @@
+<!--
+Automatically generated simulation configuration file
+-->
+
+<simulationConfiguration id="{0}">
+	
+	<output baseDirectory="{1}"
+			saveInteractionLog="true"
+			saveRelevanceJudgments="true"
+			trec_eval="true" />
+	
+	<topics>
+		{2}
+	</topics>
+	
+	<users>
+		{3}
+	</users>
+	
+{4}
+	
+</simulationConfiguration>

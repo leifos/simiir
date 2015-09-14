@@ -1,0 +1,7 @@
+Whoosh==2.5.5
+lxml==3.2.3
+nltk==2.0.4
+progress==1.2
+redis==2.8.0
+requests==2.3.0
+wsgiref==0.1.2

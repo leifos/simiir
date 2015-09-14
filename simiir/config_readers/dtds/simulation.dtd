@@ -1,0 +1,36 @@
+<!--
+Simulation Configuration DTD
+
+Author: David Maxwell
+Date:   2014-09-13
+-->
+
+<!ELEMENT attribute          (#PCDATA)>
+<!ATTLIST attribute          name CDATA #REQUIRED>
+<!ATTLIST attribute          type CDATA #REQUIRED>
+<!ATTLIST attribute          value CDATA #REQUIRED>
+<!ATTLIST attribute          is_argument CDATA #REQUIRED>
+
+<!ELEMENT simulationConfiguration (output, topics, users, searchInterface)>
+<!ATTLIST simulationConfiguration id CDATA #REQUIRED>
+
+<!ELEMENT output                  (#PCDATA)>
+<!ATTLIST output                  baseDirectory CDATA #REQUIRED>
+<!ATTLIST output                  saveInteractionLog CDATA #REQUIRED>
+<!ATTLIST output                  saveRelevanceJudgments CDATA #REQUIRED>
+<!ATTLIST output                  trec_eval CDATA #REQUIRED>
+
+<!ELEMENT users                   (user, user*)>
+
+<!ELEMENT user                    (#PCDATA)>
+<!ATTLIST user                    configurationFile CDATA #REQUIRED>
+
+<!ELEMENT topics                  (topic, topic*)>
+
+<!ELEMENT topic                   (#PCDATA)>
+<!ATTLIST topic                   id CDATA #REQUIRED>
+<!ATTLIST topic                   filename CDATA #REQUIRED>
+<!ATTLIST topic                   qrelsFilename CDATA #REQUIRED>
+
+<!ELEMENT searchInterface         (attribute*)>
+<!ATTLIST searchInterface         class CDATA #REQUIRED>

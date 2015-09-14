@@ -1,0 +1,35 @@
+<!--
+User Configuration DTD
+
+Author: David Maxwell
+Date:   2014-09-13
+-->
+
+<!ELEMENT attribute          (#PCDATA)>
+<!ATTLIST attribute          name CDATA #REQUIRED>
+<!ATTLIST attribute          type CDATA #REQUIRED>
+<!ATTLIST attribute          value CDATA #REQUIRED>
+<!ATTLIST attribute          is_argument CDATA #REQUIRED>
+
+<!ELEMENT userConfiguration  (queryGenerator, textClassifiers, stoppingDecisionMaker, logger, searchContext)>
+<!ATTLIST userConfiguration  id CDATA #REQUIRED>
+
+<!ELEMENT queryGenerator     (attribute*)>
+<!ATTLIST queryGenerator     class CDATA #REQUIRED>
+
+<!ELEMENT textClassifiers    (snippetClassifier, documentClassifier)>
+
+<!ELEMENT snippetClassifier  (attribute*)>
+<!ATTLIST snippetClassifier  class CDATA #REQUIRED>
+
+<!ELEMENT documentClassifier (attribute*)>
+<!ATTLIST documentClassifier class CDATA #REQUIRED>
+
+<!ELEMENT stoppingDecisionMaker      (attribute*)>
+<!ATTLIST stoppingDecisionMaker      class CDATA #REQUIRED>
+
+<!ELEMENT logger             (attribute*)>
+<!ATTLIST logger             class CDATA #REQUIRED>
+
+<!ELEMENT searchContext      (attribute*)>
+<!ATTLIST searchContext      class CDATA #REQUIRED>

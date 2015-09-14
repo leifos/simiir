@@ -1,0 +1,12 @@
+<!--
+General Attribute Element DTD
+
+Author: David Maxwell
+Date:   2014-09-13
+-->
+
+<!ELEMENT attribute          (#PCDATA)>
+<!ATTLIST attribute          name CDATA #REQUIRED>
+<!ATTLIST attribute          type CDATA #REQUIRED>
+<!ATTLIST attribute          value CDATA #REQUIRED>
+<!ATTLIST attribute          is_argument CDATA #REQUIRED>
