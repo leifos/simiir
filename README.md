@@ -65,20 +65,20 @@ You can include however many users you would like to user the searchInterface, a
 
 Each of the users have been configured differently to show how the different components can be set to instantiate different simulated users.
 
-#### trec_user
-Submits one query, the topic title.
+    #### trec_user
+    Submits one query, the topic title.
 
-Examines each snippet, and each document, and considers them relevant.
+    Examines each snippet, and each document, and considers them relevant.
 
-#### fixed_depth_user
+    #### fixed_depth_user
 
-Submits three word queries - generated from the topic description
+    Submits three word queries - generated from the topic description
 
-Examines to a fixed depth, initially set to 10.
+    Examines to a fixed depth, initially set to 10.
 
-Each snippet that the simulated user examines, it stochastically decides whether it should examine it or not, based on the specified probabilities.
+    Each snippet that the simulated user examines, it stochastically decides whether it should examine it or not, based on the specified probabilities.
 
-Each document that the simulated user examines, it stochastically decides whether it should mark it as relevant or not, based on the specified probabilities.
+    Each document that the simulated user examines, it stochastically decides whether it should mark it as relevant or not, based on the specified probabilities.
 
 
 ### searchInterface
