@@ -29,13 +29,15 @@ Create a virtual environment with the packages in the requirements.txt (note it 
 
 ## run sample simulations
 
+make a directory called output in example_sims
+
 cd into the simiir directory, and run:
 
-python run_simiir.py ../trec_bm25_simulation.xml
+python run_simiir.py ../example_sims/trec_bm25_simulation.xml
 
 or
 
-python run_simiir.py ../trec_pl2_simulation.xml
+python run_simiir.py ../example_sims/trec_pl2_simulation.xml
 
 You will see the simulations running where the simulated users use either BM25 or PL2.
 
