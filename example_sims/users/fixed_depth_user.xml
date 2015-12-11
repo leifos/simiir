@@ -31,10 +31,9 @@
 		<attribute name="mark_document_cost" type="integer" value="3" is_argument="true" />
 	</logger>
 
-	<searchContext class="SearchContextRevisedRelevance">
-        <!-- If the sim user sees a snippet they think is relevant,
-             but then judges the document as non-relevant,
-             it updates its opinion of the snippet to be non-relevant -->
+	<searchContext class="SearchContext">
+		<attribute name="query_formulation" type="integer" value="0" is_argument="false" />
+		<attribute name="relevance_revision" type="integer" value="1" is_argument="false" />
 	</searchContext>
 
 </userConfiguration>

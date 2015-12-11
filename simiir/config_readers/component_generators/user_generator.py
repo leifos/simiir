@@ -36,7 +36,7 @@ class UserComponentGenerator(BaseComponentGenerator):
                                                          components=[('search_interface', self.__simulation_components.search_interface),
                                                                      ('output_controller', self.__simulation_components.output),
                                                                      ('topic', self.__simulation_components.topic),
-                                                                     ('query_list', self.query_generator.generate_query_list(self.__simulation_components.topic))])
+                                                                     ('query_generator', self.query_generator)])
         
         # Finally, create the decision maker.
         self.decision_maker = self._get_object_reference(config_details=self._config_dict['stoppingDecisionMaker'],

@@ -1,4 +1,5 @@
 import os
+import abc
 from loggers import Actions
 from ifind.search.query import Query
 from search_interfaces import Document
@@ -6,16 +7,119 @@ import logging
 
 log = logging.getLogger('search_context.search_context')
 
+class NoRelevanceRevision(object):
+    """
+    Determines what to do when a nonrelevant document has been selected.
+    """
+    def __init__(self, irrelevant_documents, snippets_examined):
+        self._irrelevant_documents = irrelevant_documents
+        self._snippets_examined = snippets_examined
+    
+    def add_irrelevant_document(self, document):
+        """
+        Adds a non-relevant document to the list of documents.
+        """
+        self._irrelevant_documents.append(document)
 
-class QueryReformulation(object):
 
+class RelevanceRevision(NoRelevanceRevision):
+    """
+    Uses revised relevance to change the snippet judgement when the associated document is considered non-relevant.
+    """
+    def __init__(self, irrelevant_documents, snippets_examined):
+        super(RelevanceRevision, self).__init__(irrelevant_documents, snippets_examined)
+    
+    def add_irrelevant_document(self, document):
+        """
+        Given a document, changes the associated snippet judgement to non-relevant.
+        """
+        for snippet in self._snippets_examined:
+            if document.doc_id == snippet.doc_id:
+                snippet.judgment = 0
+        
+        super(RelevanceRevision, self).add_irrelevant_document(document)
+
+
+class QueryFormulation(object):
+    """
+    Base class for query formulation approaches - inherit from this class and implement get_next_query()
+    to generate a new approach for determining what the next query is given a querying strategy.
+    """
     def __init__(self, search_context):
-        self.search_context = search_context
+        self._search_context = search_context
+        self.__issued_queries = search_context.issued_queries
 
-
+    @abc.abstractmethod
     def get_next_query(self):
+        """
+        Returns the next query - implement this in a concrete class!
+        """
         pass
+    
+    @abc.abstractmethod
+    def get_query_list(self):
+        """
+        Returns the query list. Abstract method; implement this in a concrete class.
+        """
+        pass
+    
+    def _has_query_been_issued(self, query_terms):
+        """
+        By examining previously examined queries in the search session, returns a boolean indicating whether
+        the query terms provided have been previously examined. True iif they have, False otherwise.
+        """
+        for issued_query in self.__issued_queries:
+            issued_terms = issued_query.terms
+            
+            if query_terms == issued_terms:
+                return True
+            
+        return False
 
+class QueryReformulation(QueryFormulation):
+    """
+    An approach which, given the search context (i.e. examined snippets and documents), works out a new series of queries
+    to use, and returns the first unissued query.
+    """
+    def __init__(self, search_context):
+        super(QueryReformulation, self).__init__(search_context)
+    
+    def get_query_list(self):
+        return self._search_context.query_generator.generate_query_list(self._search_context.topic, self._search_context)
+    
+    def get_next_query(self):
+        """
+        Regenerates the query list each time this method is called, taking the updated search context into account.
+        """
+        query_list = self.get_query_list()
+        
+        for query in query_list:
+            if not self._has_query_been_issued(query[0]):
+                return query  #  Not been issued beforehand; so say this is the query to issue!
+        
+        return None  # Exhausted list of queries.
+
+class QueryNoReformulation(QueryFormulation):
+    """
+    An approach which simply reads off the list of generated queries. There is no reformulation.
+    The query list is generated straight away when instantiated to improve efficiency - no need to continually regen the list.
+    """
+    def __init__(self, search_context):
+        super(QueryNoReformulation, self).__init__(search_context)
+        self.__query_list = self._search_context.query_generator.generate_query_list(self._search_context.topic)
+    
+    def get_query_list(self):
+        return self.__query_list
+    
+    def get_next_query(self):
+        """
+        With a static query list, returns the next query that has not been issued.
+        """
+        for query in self.__query_list:
+            if not self._has_query_been_issued(query[0]):
+                return query  # This query has not been issued before, so say it's the next one to issue!
+        
+        return None  # Exhausted the list of queries; return None (no more to issue)
 
 
 class SearchContext(object):
@@ -23,22 +127,22 @@ class SearchContext(object):
     The "memory" of the simulated user. Contains details such as the documents that have been examined by the user.
     This class also provides a link between the simulated user and the search engine interface - allowing one to retrieve the next document, snippet, etc.
     """
-    def __init__(self, search_interface, output_controller, topic, query_list=[]):
+    def __init__(self, search_interface, output_controller, topic, query_generator):
         """
         Several instance variables here to track the different aspects of the search process.
         """
         self._search_interface = search_interface
         self._output_controller = output_controller
-        self._topic = topic
+        self.topic = topic
         
         self._actions = []                       # A list of all of the actions undertaken by the simulated user in chronological order.
         self._depths = []                        # Documents and snippets examined for previous queries.
         
-        self._query_list = query_list            # The list of queries to issue.
+        self.query_generator = query_generator   # The query generator object.
         self._query_count = 0                    # The total number of queries issued.
         self._last_query = None                  # The Query object that was issued.
         self._last_results = None                # Results for the query.
-        self._issued_queries = []                # A list of queries issued in chronological order.
+        self.issued_queries = []                 # A list of queries issued in chronological order.
         
         self._current_serp_position = 0          # The position in the current SERP we are currently looking at (zero-based!)
                                                  # This counter is used for the current snippet and document.
@@ -54,10 +158,61 @@ class SearchContext(object):
         self._irrelevant_documents = []          # All documents marked irrelevant throughout the search session.
 
         self.query_limit = 0                     # 0 - no limit on the number issued. Otherwise, the number of queries is capped
-        self.query_reformulation = 0             # 0 - no reformulations of queries based on interaction, 1 - uses search context to update the list of possible queries
+        self.query_formulation = 0               # 0 - no reformulations of queries based on interaction, 1 - uses search context to update the list of possible queries
         self.relevance_revision = 0              # 0 - no revising of relevance judgements, 1- updates the relevance judgement of snippets
-
-
+    
+    @property
+    def relevance_revision(self):
+        """
+        Setter for the relevance revision technique.
+        """
+        if not hasattr(self, '_relevance_revision'):
+            self._relevance_revision = 0
+        
+        return self._relevance_revision
+    
+    @relevance_revision.setter
+    def relevance_revision(self, value):
+        """
+        The getter for the relevance revision technique.
+        Given one of the key values in rr_strategies below, instantiates the relevant approach.
+        """
+        rr_strategies = {
+            0: NoRelevanceRevision,
+            1: RelevanceRevision
+        }
+        
+        if value not in rr_strategies.keys():
+            raise ValueError("Value {0} for the relevance revision approach is not valid.".format(value))
+        
+        self._relevance_revision = rr_strategies[value](self._irrelevant_documents, self._snippets_examined)
+    
+    @property
+    def query_formulation(self):
+        """
+        Setter for the query reformulation approach.
+        """
+        if not hasattr(self, '_query_formulation'):
+            self._query_formulation = 0
+        
+        return self._query_formulation
+    
+    @query_formulation.setter
+    def query_formulation(self, value):
+        """
+        The getter for the query reformulation approach.
+        Given one of the key values in qf_strategies below, instantiates the relevant approach.
+        """
+        qf_strategies = {
+            0: QueryNoReformulation,
+            1: QueryReformulation
+        }
+        
+        if value not in qf_strategies.keys():
+            raise ValueError("Value {0} for the query formulation approach is not valid.".format(value))
+        
+        self._query_formulation = qf_strategies[value](search_context=self)
+    
     
     def report(self):
         """
@@ -78,11 +233,11 @@ class SearchContext(object):
         return return_string
         
     def show_query_list(self):
-        for q in self._query_list:
+        for q in self.query_formulation.get_query_list():
             print q
 
     def log_query_list(self):
-        for q in self._query_list:
+        for q in self.query_formulation.get_query_list():
             log.debug(q)
 
 
@@ -181,18 +336,17 @@ class SearchContext(object):
         If no further queries are available, None is returned.
         """
         if self.query_limit > 0:
-            if self._query_count >=  self.query_limit:
-                return None
-
-
-
-        query_text = None
+            if self._query_count >= self.query_limit:
+                return None  # We've exceeded the number of queries we can issue for this search session; stop.
         
-        if len(self._query_list) > self._query_count:
-            query_text = self._query_list[self._query_count][0]  # We only want the query terms, not the scores - hence [0]
+        next_query_tuple = self._query_formulation.get_next_query()  # Returns ('query string', score)
+        next_query = None
+        
+        if next_query_tuple is not None:
             self._query_count = self._query_count + 1
-        
-        return query_text
+            next_query = next_query_tuple[0]
+            
+        return next_query
     
     def add_issued_query(self, query_text, page=1, page_len=1000):
         """
@@ -214,7 +368,7 @@ class SearchContext(object):
         # Obtain the Query object and append it to the issued queries list.
         query_object = create_query_object()
         
-        self._issued_queries.append(query_object)
+        self.issued_queries.append(query_object)
         self._last_query = query_object
         self._last_results = self._last_query.response.results
     
@@ -285,7 +439,8 @@ class SearchContext(object):
         """
         Adds the given document to the irrelevant document list.
         """
-        self._irrelevant_documents.append(document)
+        print 'nr'
+        self._relevance_revision.add_irrelevant_document(document)
     
     def get_current_serp_position(self):
         """
@@ -307,7 +462,7 @@ class SearchContext(object):
         """
         Returns the topic Document object.
         """
-        return self._topic
+        return self.topic
     
     def increment_serp_position(self):
         """
@@ -346,14 +501,14 @@ class SearchContext(object):
         """
         return self._documents_examined
     
-    def get_all_queries(self):
-        """
-        Returns a list of all queries generated.
-        """
-        return self._query_list
-    
     def get_issued_queries(self):
         """
         Returns a list of all queries that have been issued for the given search session.
         """
-        return self._issued_queries
+        return self.issued_queries
+    
+    def get_all_queries(self):
+        """
+        Returns all queries in the generated query list.
+        """
+        return self.query_formulation.get_query_list()
