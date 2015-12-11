@@ -34,3 +34,7 @@ class BaseTextClassifier(object):
         
         f.close()
         self.background_language_model = LanguageModel(term_dict=vocab)
+
+
+    def update_topic_language_model(self, text_list):
+        return None

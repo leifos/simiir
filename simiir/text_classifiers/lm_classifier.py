@@ -47,6 +47,39 @@ class LMTextClassifier(BaseTextClassifier):
         #SmoothedLanguageModel(language_model, self.background_language_model, 100)
         log.debug("Making topic {0}".format(self._topic.id))
 
+
+
+    def update_topic_language_model(self, text_list):
+
+        topic_text = self._topic.content + self._topic.title
+
+        n = len(text_list)
+        snippet_text = ' '.join(text_list)
+
+        term_extractor = SingleQueryGeneration(minlen=3, stopwordfile=self._stopword_file)
+        term_extractor.extract_queries_from_text(topic_text)
+        topic_term_counts = term_extractor.query_count
+
+
+
+        term_extractor.extract_queries_from_text(snippet_text)
+        new_text_term_counts = term_extractor.query_count
+
+
+        for term in topic_term_counts:
+            if term in new_text_term_counts:
+                new_text_term_counts[term] += topic_term_counts[term]
+            else:
+                new_text_term_counts[term] = topic_term_counts[term]
+
+        new_language_model = LanguageModel(term_dict=new_text_term_counts)
+
+        self.topic_language_model = new_language_model
+
+        log.debug("Updating topic {0}".format(self._topic.id))
+
+
+
     def is_relevant(self, document):
         """
 
@@ -98,7 +131,7 @@ class LMTextClassifier(BaseTextClassifier):
         background_term_prob = self.background_language_model.get_term_prob(term)
 
         term_score = self.lam * topic_term_prob + (1-self.lam) * background_term_prob
-        if term_score > 0.0:
+        if term_score > 0.0 and background_term_prob > 0.0:
             return math.log(term_score/background_term_prob,2)
         else:
             return 0.0
@@ -109,7 +142,7 @@ class LMTextClassifier(BaseTextClassifier):
 
         n = self.topic_language_model.get_total_occurrences()
         term_score =  (topic_term_count + self.mu * background_term_prob)/(n+self.mu)
-        if term_score > 0.0:
+        if term_score > 0.0 and background_term_prob > 0.0:
             return math.log(term_score/background_term_prob,2)
         else:
             return 0.0
@@ -126,7 +159,7 @@ class LMTextClassifier(BaseTextClassifier):
         if background_term_prob == 0.0:
             background_term_prob = 1.0/float(v);
         term_score = (float(topic_term_count) + float(self.alpha))/(float(n) + float(v)*float(self.alpha))
-        if term_score > 0.0:
+        if term_score > 0.0 and background_term_prob > 0.0:
             return math.log(term_score/background_term_prob,2)
         else:
             return 0.0
