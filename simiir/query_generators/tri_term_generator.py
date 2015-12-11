@@ -1,14 +1,14 @@
 from ifind.common.query_ranker import QueryRanker
 from ifind.common.query_generation import SingleQueryGeneration
-from query_generators.base_generator import BaseQueryGenerator
+from simiir.query_generators.base_generator import BaseQueryGenerator
 
 class TriTermQueryGenerator(BaseQueryGenerator):
     """
     Implementing Strategy 3 from Heikki's 2009 paper, generating three-term queries.
     The first two terms are drawn from the topic, with the final and third term selected from the description - in some ranked order.
     """
-    def __init__(self, output_controller, stopword_file, background_file=[], topic_model=0, log_queries=True):
-        super(TriTermQueryGenerator, self).__init__(output_controller, stopword_file, background_file=background_file, topic_model=topic_model)
+    def __init__(self, output_controller, stopword_file, background_file=[], log_queries=True):
+        super(TriTermQueryGenerator, self).__init__(output_controller, stopword_file, background_file=background_file)
         self.__log_queries = log_queries
     
     def generate_query_list(self, topic, search_context=None):

@@ -1,5 +1,4 @@
-from query_generators.base_generator import BaseQueryGenerator
-
+from simiir.query_generators.base_generator import BaseQueryGenerator
 from ifind.common.language_model import LanguageModel
 from ifind.common.query_generation import SingleQueryGeneration
 from ifind.common.smoothed_language_model import BayesLanguageModel

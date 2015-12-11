@@ -1,4 +1,4 @@
-from query_generators.tri_term_generator import TriTermQueryGenerator
+from simiir.query_generators.tri_term_generator import TriTermQueryGenerator
 
 class TriTermQueryGeneratorReversed(TriTermQueryGenerator):
     """
@@ -6,8 +6,8 @@ class TriTermQueryGeneratorReversed(TriTermQueryGenerator):
     The first two terms are drawn from the topic, with the final and third term selected from the description - in some ranked order.
     Reverses the queries.
     """
-    def __init__(self, output_controller, stopword_file, background_file=[], topic_model=0, log_queries=True):
-        super(TriTermQueryGeneratorReversed, self).__init__(output_controller, stopword_file, background_file=background_file, topic_model=topic_model, log_queries=False)
+    def __init__(self, output_controller, stopword_file, background_file=[],  log_queries=True):
+        super(TriTermQueryGeneratorReversed, self).__init__(output_controller, stopword_file, background_file=background_file, log_queries=False)
         self.__log_queries = log_queries
     
     def generate_query_list(self, topic, search_context=None):

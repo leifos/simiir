@@ -1,6 +1,6 @@
 from ifind.common.query_ranker import QueryRanker
 from ifind.common.query_generation import SingleQueryGeneration
-from query_generators.base_generator import BaseQueryGenerator
+from simiir.query_generators.base_generator import BaseQueryGenerator
 
 from query_generators.single_term_generator_reversed import SingleTermQueryGeneratorReversed
 from query_generators.tri_term_generator import TriTermQueryGenerator
@@ -9,10 +9,10 @@ class SingleReversedTriInterleavedQueryGenerator(BaseQueryGenerator):
     """
     Takes the SingleTermGeneratorReversed and the TriTermGenerator, and interleaves like [Single,Tri,Single,Tri,Single,Tri...]
     """
-    def __init__(self, output_controller, stopword_file, background_file=[], topic_model=0):
+    def __init__(self, output_controller, stopword_file, background_file=[]):
         super(SingleReversedTriInterleavedQueryGenerator, self).__init__(output_controller, stopword_file, background_file=background_file, topic_model=topic_model)
-        self.__single = SingleTermQueryGeneratorReversed(output_controller, stopword_file, background_file, topic_model, log_queries=False)
-        self.__tri = TriTermQueryGenerator(output_controller, stopword_file, background_file, topic_model, log_queries=False)
+        self.__single = SingleTermQueryGeneratorReversed(output_controller, stopword_file, background_file, log_queries=False)
+        self.__tri = TriTermQueryGenerator(output_controller, stopword_file, background_file, log_queries=False)
     
     def generate_query_list(self, topic, search_context=None):
         """

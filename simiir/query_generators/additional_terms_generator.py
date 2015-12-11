@@ -1,6 +1,6 @@
 from ifind.common.query_ranker import QueryRanker
 from ifind.common.query_generation import SingleQueryGeneration
-from query_generators.smarter_generator import SmarterQueryGenerator
+from simiir.query_generators.smarter_generator import SmarterQueryGenerator
 
 class AdditionalQueryGenerator(SmarterQueryGenerator):
     """
@@ -8,8 +8,8 @@ class AdditionalQueryGenerator(SmarterQueryGenerator):
     Given n fixed query terms, we then append query terms to the end of the fixed query m times.
     Fixed terms are derived from the topic title, appended terms from the topic description.
     """
-    def __init__(self, output_controller, stopword_file, background_file=[], topic_model=0, title_stem_length=2, description_cutoff=10):
-        super(AdditionalQueryGenerator, self).__init__(output_controller, stopword_file, background_file=background_file, topic_model=topic_model)
+    def __init__(self, output_controller, stopword_file, background_file=[], title_stem_length=2, description_cutoff=10):
+        super(AdditionalQueryGenerator, self).__init__(output_controller, stopword_file, background_file=background_file)
         self.__title_stem_length = title_stem_length
         self.__description_cutoff = description_cutoff
         

@@ -1,6 +1,6 @@
 from ifind.common.query_ranker import QueryRanker
 from ifind.common.query_generation import SingleQueryGeneration
-from query_generators.base_generator import BaseQueryGenerator
+from simiir.query_generators.base_generator import BaseQueryGenerator
 
 class PredeterminedQueryGenerator(BaseQueryGenerator):
     """
@@ -15,11 +15,11 @@ class PredeterminedQueryGenerator(BaseQueryGenerator):
     The query file should be in the format (note CSV!)
         queryid,userid,topic,terms
     """
-    def __init__(self, output_controller, stopword_file, query_file, user, background_file=[], topic_model=0):
+    def __init__(self, output_controller, stopword_file, query_file, user, background_file=[]):
         """
         Initialises the class.
         """
-        super(PredeterminedQueryGenerator, self).__init__(output_controller, stopword_file, background_file=[], topic_model=0)
+        super(PredeterminedQueryGenerator, self).__init__(output_controller, stopword_file, background_file=[])
         self.__query_filename = query_file
         self.__user = user
     
