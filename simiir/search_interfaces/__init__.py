@@ -20,7 +20,7 @@ class Document(object):
         """
         Returns a string representation of a given instance of Document.
         """
-        return "<Topic ID: '{0}' Title: '{1}' Content: '{2}'".format(self.id, self.title, self.content)
+        return "<Document ID: '{0}' Title: '{1}' Content: '{2}'".format(self.id, self.title, self.content)
 
 class Topic(Document):
     """
@@ -48,3 +48,9 @@ class Topic(Document):
         
         self.title = first_line
         self.content = topic_text
+
+    def __str__(self):
+        """
+        Returns a string representation of a given instance of Topic.
+        """
+        return "<Topic ID: '{0}' Title: '{1}' Content: '{2}'".format(self.id, self.title, self.content)

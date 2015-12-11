@@ -8,7 +8,7 @@ class BiTermQueryGenerator(SmarterQueryGenerator):
     The first term comes from the term ranked highest in the topic title, with the second term originating from the description.
     Currently uses a language model to perform the ranking of terms.
     """
-    def generate_query_list(self, topic):
+    def generate_query_list(self, topic, search_context=None):
         """
         Given a Topic object, produces a list of query terms that could be issued by the simulated agent.
         """

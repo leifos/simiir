@@ -23,7 +23,7 @@ class PredeterminedQueryGenerator(BaseQueryGenerator):
         self.__query_filename = query_file
         self.__user = user
     
-    def generate_query_list(self, topic):
+    def generate_query_list(self, topic, search_context=None):
         """
         Returns the list of predetermined queries for the specified user.
         """

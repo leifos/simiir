@@ -8,11 +8,12 @@ class BaseTextClassifier(object):
         self._stopword_file = stopword_file
         self._background_file = background_file
         self._topic = topic
+        self.doc_score =0.0
         
         if self._background_file:
             self.read_in_background(self._background_file)
     
-    @abc.abstractmethod
+    #@abc.abstractmethod
     def is_relevant(self, document):
         """
         Returns True if the given document is relevant.

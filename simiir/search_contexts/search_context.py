@@ -6,12 +6,24 @@ import logging
 
 log = logging.getLogger('search_context.search_context')
 
+
+class QueryReformulation(object):
+
+    def __init__(self, search_context):
+        self.search_context = search_context
+
+
+    def get_next_query(self):
+        pass
+
+
+
 class SearchContext(object):
     """
     The "memory" of the simulated user. Contains details such as the documents that have been examined by the user.
     This class also provides a link between the simulated user and the search engine interface - allowing one to retrieve the next document, snippet, etc.
     """
-    def __init__(self, search_interface, output_controller, topic, query_list=[], query_limit=None):
+    def __init__(self, search_interface, output_controller, topic, query_list=[]):
         """
         Several instance variables here to track the different aspects of the search process.
         """
@@ -29,7 +41,7 @@ class SearchContext(object):
         self._issued_queries = []                # A list of queries issued in chronological order.
         
         self._current_serp_position = 0          # The position in the current SERP we are currently looking at (zero-based!)
-                                                  # This counter is used for the current snippet and document.
+                                                 # This counter is used for the current snippet and document.
         
         self._snippets_examined = []             # Snippets that have been previously examined.
         self._documents_examined = []            # Documents that have been previously examined.
@@ -40,9 +52,12 @@ class SearchContext(object):
         
         self._relevant_documents = []            # All documents marked relevant throughout the search session.
         self._irrelevant_documents = []          # All documents marked irrelevant throughout the search session.
-        
-        if type(query_limit) == int and query_limit > 0:
-            self._query_list = self._query_list[0:query_limit]
+
+        self.query_limit = 0                     # 0 - no limit on the number issued. Otherwise, the number of queries is capped
+        self.query_reformulation = 0             # 0 - no reformulations of queries based on interaction, 1 - uses search context to update the list of possible queries
+        self.relevance_revision = 0              # 0 - no revising of relevance judgements, 1- updates the relevance judgement of snippets
+
+
     
     def report(self):
         """
@@ -165,6 +180,12 @@ class SearchContext(object):
         Returns the string representation of the next query.
         If no further queries are available, None is returned.
         """
+        if self.query_limit > 0:
+            if self._query_count >=  self.query_limit:
+                return None
+
+
+
         query_text = None
         
         if len(self._query_list) > self._query_count:

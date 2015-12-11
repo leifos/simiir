@@ -1,7 +1,7 @@
 __author__ = 'david'
 
 import abc
-from text_classifiers.base_classifier import BaseTextClassifier
+from simiir.text_classifiers.base_classifier import BaseTextClassifier
 from ifind.seeker.trec_qrel_handler import TrecQrelHandler
 from random import random
 
@@ -30,8 +30,8 @@ class BaseInformedTrecTextClassifier(BaseTextClassifier):
         """
         This is spun off from the constructor to make way for the Redis classifier.
         """
-        pass
 
+        self._trecqrels = TrecQrelHandler(qrel_file)
 
     def make_topic_language_model(self):
         """
@@ -43,14 +43,17 @@ class BaseInformedTrecTextClassifier(BaseTextClassifier):
         """
 
         """
+
         val = self._trecqrels.get_value_if_exists(self._topic.id, document.doc_id)  # Does the document exist?
-        
+
         if not val:  # If not, we fall back to the generic topic.
             val = self._trecqrels.get_value('0', document.doc_id)
+        if not val:  # if still no val, assume the document is not relevant.
+            val = 0
         
         dp = random()
-        
-        if val > 0:
+
+        if val > 0: # if the judgement is relevant
             if dp > self._rel_prob:
                 return False
             else:

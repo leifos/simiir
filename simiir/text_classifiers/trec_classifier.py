@@ -1,5 +1,10 @@
 __author__ = 'leif'
 from text_classifiers.base_classifier import BaseTextClassifier
+import logging
+
+log = logging.getLogger('trec_classifer.TrecTextClassifier')
+
+
 
 class TrecTextClassifier(BaseTextClassifier):
     """
@@ -15,7 +20,7 @@ class TrecTextClassifier(BaseTextClassifier):
         """
 
         """
-        print "No Topic model required for Trec Classifier"
+        log.debug("No Topic model required for Trec Classifier: It always returns true")
 
     def is_relevant(self, document):
         """

@@ -8,7 +8,7 @@ class SingleTermQueryGeneratorReversed(SingleTermQueryGenerator):
         super(SingleTermQueryGeneratorReversed, self).__init__(output_controller, stopword_file, background_file=background_file, topic_model=topic_model, log_queries=False)
         self.__log_queries = log_queries
     
-    def generate_query_list(self, topic):
+    def generate_query_list(self, topic, search_context=None):
         """
         Takes the query list from the underlying query generator (single term), and reverses it.
         """

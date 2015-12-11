@@ -11,7 +11,7 @@ class TriTermQueryGenerator(BaseQueryGenerator):
         super(TriTermQueryGenerator, self).__init__(output_controller, stopword_file, background_file=background_file, topic_model=topic_model)
         self.__log_queries = log_queries
     
-    def generate_query_list(self, topic):
+    def generate_query_list(self, topic, search_context=None):
         """
         Given a Topic object, produces a list of query terms that could be issued by the simulated agent.
         """
