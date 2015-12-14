@@ -4,6 +4,10 @@ import abc
 from simiir.text_classifiers.base_classifier import BaseTextClassifier
 from ifind.seeker.trec_qrel_handler import TrecQrelHandler
 from random import random
+import logging
+
+log = logging.getLogger('base_informed_trec_classifier')
+
 
 class BaseInformedTrecTextClassifier(BaseTextClassifier):
     """
@@ -17,10 +21,7 @@ class BaseInformedTrecTextClassifier(BaseTextClassifier):
         """
         super(BaseInformedTrecTextClassifier, self).__init__(topic, stopword_file=[], background_file=[])
         self._initialise_handler(qrel_file)
-        
-        #self._rel_prob = rprob
-        #self._nrel_prob = nprob
-    
+
 
     def _initialise_handler(self, qrel_file):
         """
@@ -33,7 +34,7 @@ class BaseInformedTrecTextClassifier(BaseTextClassifier):
         """
 
         """
-        print "No Topic model required for Trec Classifier"
+        log.debug("No Topic model required for this Trec Classifier")
 
 
 
