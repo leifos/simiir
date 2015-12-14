@@ -5,7 +5,7 @@
 	</queryGenerator>
 
 	<textClassifiers>
-		<snippetClassifier class="InformedTrecTextClassifier">
+		<snippetClassifier class="StochasticInformedTrecTextClassifier">
 			<attribute name="stopword_file" type="string" value="data/stopwords.txt" is_argument="true" />
 			<attribute name="background_file" type="string" value="data/vocab.txt" is_argument="true" />
             <attribute name="qrel_file" type="string" value="data/trec2005.qrels.all" is_argument="true" />
@@ -13,7 +13,7 @@
             <attribute name="nprob" type="float" value="0.65" is_argument="true" />
 		</snippetClassifier>
 
-		<documentClassifier class="InformedTrecTextClassifier">
+		<documentClassifier class="StochasticInformedTrecTextClassifier">
 			<attribute name="stopword_file" type="string" value="data/stopwords.txt" is_argument="true" />
 			<attribute name="background_file" type="string" value="data/vocab.txt" is_argument="true" />
             <attribute name="qrel_file" type="string" value="data/trec2005.qrels.all" is_argument="true" />

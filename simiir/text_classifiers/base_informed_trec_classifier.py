@@ -7,25 +7,21 @@ from random import random
 
 class BaseInformedTrecTextClassifier(BaseTextClassifier):
     """
-    Takes the TREC QREL file, and the probabilities rprob and nprob
-    if a document is TREC relevant, then the probability that it is judged relevant is given by rprob
-    if it is NOT TREC releavnt, then the probabiltiy that iit is judged non-relevant is given by nprob
+    Takes the TREC QREL file and loads it into a TrecQrelHandler
 
-    rprob and nprob are set to 1.0 by default, so that the classifier is deterministic,
-    i.e. it returns the exact TREC relevance judgement
+    Abstract method is_relevant() needs to be implemented.
     """
-    def __init__(self, topic, qrel_file, stopword_file=[], background_file=[], rprob=1.0, nprob=1.0):
+    def __init__(self, topic, qrel_file):
         """
 
         """
-        super(BaseInformedTrecTextClassifier, self).__init__(topic, stopword_file, background_file)
+        super(BaseInformedTrecTextClassifier, self).__init__(topic, stopword_file=[], background_file=[])
         self._initialise_handler(qrel_file)
         
-        self._rel_prob = rprob
-        self._nrel_prob = nprob
+        #self._rel_prob = rprob
+        #self._nrel_prob = nprob
     
-    
-    @abc.abstractmethod
+
     def _initialise_handler(self, qrel_file):
         """
         This is spun off from the constructor to make way for the Redis classifier.
@@ -39,27 +35,33 @@ class BaseInformedTrecTextClassifier(BaseTextClassifier):
         """
         print "No Topic model required for Trec Classifier"
 
-    def is_relevant(self, document):
-        """
 
-        """
 
-        val = self._trecqrels.get_value_if_exists(self._topic.id, document.doc_id)  # Does the document exist?
+    def _get_judgement(self, topic_id, doc_id):
+        """
+        Helper function that returns the judgement of the document
+        If the value does not exist in the qrels, it checks topic '0' - a non-existant topic, which you can put pre-rolled relevance values
+        The default value returned is 0, indicated no gain/non-relevant.
+
+        topic_id (string): the TREC topic number
+        doc_id (srting): the TREC document number
+        """
+        val = self._trecqrels.get_value_if_exists(topic_id, doc_id)  # Does the document exist?
 
         if not val:  # If not, we fall back to the generic topic.
-            val = self._trecqrels.get_value('0', document.doc_id)
+            val = self._trecqrels.get_value('0', doc_id)
         if not val:  # if still no val, assume the document is not relevant.
             val = 0
-        
-        dp = random()
 
-        if val > 0: # if the judgement is relevant
-            if dp > self._rel_prob:
-                return False
-            else:
-                return True
-        else:
-            if dp > self._nrel_prob:
-                return True
-            else:
-                return False
+        return val
+
+
+    @abc.abstractmethod
+    def is_relevant(self, document):
+        """
+        Needs to be implemented:
+        Returns True if the document is considered relevant:
+        else False.
+        """
+        pass
+

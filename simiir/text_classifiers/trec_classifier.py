@@ -24,7 +24,7 @@ class TrecTextClassifier(BaseTextClassifier):
 
     def is_relevant(self, document):
         """
-
+        Every snippet/document is considered relevant
         """
         return True
 

@@ -5,13 +5,13 @@
 	</queryGenerator>
 
 	<textClassifiers>
-		<snippetClassifier class="InformedTrecTextClassifier">
+		<snippetClassifier class="StochasticInformedTrecTextClassifier">
             <attribute name="qrel_file" type="string" value="../example_data/qrels/trec2005.qrels.all" is_argument="true" />
             <attribute name="rprob" type="float" value="0.5" is_argument="true" />
             <attribute name="nprob" type="float" value="0.5" is_argument="true" />
 		</snippetClassifier>
 
-		<documentClassifier class="InformedTrecTextClassifier">
+		<documentClassifier class="StochasticInformedTrecTextClassifier">
             <attribute name="qrel_file" type="string" value="../example_data/qrels/trec2005.qrels.all" is_argument="true" />
             <attribute name="rprob" type="float" value="0.5" is_argument="true" />
             <attribute name="nprob" type="float" value="0.5" is_argument="true" />
