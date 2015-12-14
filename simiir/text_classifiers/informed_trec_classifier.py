@@ -7,29 +7,25 @@ import logging
 
 log = logging.getLogger('informed_trec_classifer.InformedTrecTextClassifier')
 
-
 class InformedTrecTextClassifier(BaseInformedTrecTextClassifier):
     """
     A concrete implementation of BaseInformedTrecTextClassifier.
-
     No dice rolling here. What ever is in the judgement file is used.
-
     """
     def __init__(self, topic, qrel_file):
         """
-
+        Initialise an instance of the InformedTrecTextClassifier.
         """
         super(InformedTrecTextClassifier, self).__init__(topic, qrel_file)
-
         log.debug("Classifier uses TREC qrels to make decision:")
-
-
-
+        
+        
     def is_relevant(self, document):
         """
-        No dice rolling here. What ever is in the judgement file is used.
+        No dice rolling here. Whatever is in the judgement file is used.
         """
         val = self._get_judgement(self._topic.id, document.doc_id)
+        
         if val > 0:
             return True
         else:

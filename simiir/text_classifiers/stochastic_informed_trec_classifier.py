@@ -19,8 +19,7 @@ class StochasticInformedTrecTextClassifier(BaseInformedTrecTextClassifier):
         """
 
         """
-        super(BaseInformedTrecTextClassifier, self).__init__(topic, stopword_file=[], background_file=[])
-        self._initialise_handler(qrel_file)
+        super(StochasticInformedTrecTextClassifier, self).__init__(topic, qrel_file)
 
         self._rel_prob = rprob
         self._nrel_prob = nprob
@@ -28,13 +27,11 @@ class StochasticInformedTrecTextClassifier(BaseInformedTrecTextClassifier):
     @abc.abstractmethod
     def is_relevant(self, document):
         """
-        Rolls the dice, and decides whether a relevant document stays relevant or not (and similarly for a non-relevant)
+        Rolls the dice, and decides whether a relevant document stays relevant or not (and similarly for a non-relevant).
         """
         val = self._get_judgement(self._topic.id, document.doc_id)
-
-
         dp = random()
-
+        
         if val > 0: # if the judgement is relevant
             if dp > self._rel_prob:
                 return False
