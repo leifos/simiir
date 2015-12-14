@@ -32,6 +32,7 @@ class InformedRedisDataHandler(InformedFileDataHandler):
     For Redis-based storing of the QREL file.
     """
     def __init__(self, filename, host='localhost', port=6379):  # Defaults, assume localhost@6379 for Redis server.
+                                                                # The BaseInformedTrecTextClassifier needs to be refactored to accomodate passing this information.
         self._trecqrels = self._initialise_handler(filename, host=host, port=port)
     
     def _initialise_handler(self, filename, **kwargs):

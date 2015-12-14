@@ -8,11 +8,13 @@
 		<snippetClassifier class="InformedTrecTextClassifier">
 			<attribute name="stopword_file" type="string" value="data/stopwords.txt" is_argument="true" />
             <attribute name="qrel_file" type="string" value="data/prerolled/aq-robust-smucker.click" is_argument="true" />
+			<attribute name="data_handler" type="integer" value="0" is_argument="false" />
 		</snippetClassifier>
 		
 		<documentClassifier class="InformedTrecTextClassifier">
 			<attribute name="stopword_file" type="string" value="data/stopwords.txt" is_argument="true" />
             <attribute name="qrel_file" type="string" value="data/prerolled/aq-robust-smucker.mark" is_argument="true" />
+			<attribute name="data_handler" type="integer" value="0" is_argument="false" />
 		</documentClassifier>
 	</textClassifiers>
 
