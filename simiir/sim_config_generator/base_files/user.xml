@@ -15,9 +15,9 @@
 		
 	</textClassifiers>
 
-	<decisionMaker class="{7}">
+	<stoppingDecisionMaker class="{7}">
         {8}
-	</decisionMaker>
+	</stoppingDecisionMaker>
 	
 	<logger class="{9}">
 		{10}

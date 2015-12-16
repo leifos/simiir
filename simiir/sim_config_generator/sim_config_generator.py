@@ -258,7 +258,7 @@ def generate_markup(dict_repr, permutations, gen_filename):
             user_markup_components['documentClassifier']['class'],
             user_markup_components['documentClassifier']['attributes'] if user_markup_components['documentClassifier']['attributes'] is not None else "",
             user_markup_components['stoppingDecisionMaker']['class'],
-            user_markup_components['stoppingDecisionMaker']['attributes'] if user_markup_components['decisionMaker']['attributes'] is not None else "",
+            user_markup_components['stoppingDecisionMaker']['attributes'] if user_markup_components['stoppingDecisionMaker']['attributes'] is not None else "",
             user_markup_components['logger']['class'],
             user_markup_components['logger']['attributes'] if user_markup_components['logger']['attributes'] is not None else "",
             user_markup_components['searchContext']['class'],
