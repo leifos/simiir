@@ -1,9 +1,22 @@
 # Byte-compiled / optimized / DLL files
+output/*.log
+output/*.rels
+output/*.queries
+output/*.out
+output/*.cfg
+
+.DS_Store
+*.DS_Store
+.idea
+
+
 __pycache__/
 *.py[cod]
 
 # C extensions
 *.so
+
+
 
 # Distribution / packaging
 .Python
