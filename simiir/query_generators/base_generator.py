@@ -8,6 +8,10 @@ import logging
 
 log = logging.getLogger('query_generators.base_generator')
 
+
+
+
+
 class BaseQueryGenerator(object):
     """
     The base query generator class.
@@ -19,13 +23,17 @@ class BaseQueryGenerator(object):
     def __init__(self, stopword_file, background_file=[]):
         self._stopword_file = stopword_file
         self._background_file = background_file
+        self.updating = False
+        self.update_method = 1
+        self._query_list = None
 
-    def _generate_topic_language_model(self, topic, search_context=None):
+    def _generate_topic_language_model(self, search_context):
 
         """
         Given a Topic object, returns a language model representation for the given topic.
         Override this method in inheriting classes to generate and return different language models.
         """
+        topic = search_context.topic
         topic_text = "{0} {1}".format(topic.title, topic.content)
 
         document_extractor = SingleQueryGeneration(minlen=3, stopwordfile=self._stopword_file)
@@ -37,13 +45,14 @@ class BaseQueryGenerator(object):
         return topic_language_model
 
 
-    def generate_query_list(self, topic, search_context=None):
+    def generate_query_list(self, search_context):
         """
         Given a Topic object, produces a list of query terms that could be issued by the simulated agent.
         """
+        topic = search_context.topic
         topic_text = "{0} {1}".format(topic.title, topic.content)
 
-        topic_lang_model = self._generate_topic_language_model(topic, search_context)
+        topic_lang_model = self._generate_topic_language_model(search_context)
         
         bi_query_generator = BiTermQueryGeneration(minlen=3, stopwordfile=self._stopword_file)
 
@@ -74,3 +83,47 @@ class BaseQueryGenerator(object):
         return stem(term)
     
 
+    def update_model(self, search_context):
+        """
+        Enables the model of query/topic to be updated, based on the search context
+        The update model based on the documents etc in the search context (i.e. memory of the user)
+
+        :param  search_context: search_contexts.search_context object
+        :return: returns True is topic model is updated.
+        """
+        return False
+
+
+    def get_next_query(self, search_context):
+        """
+        """
+
+        if self._query_list is None:
+            self._query_list = self.generate_query_list(search_context)
+
+
+        for query in self._query_list:
+            candidate_query = query[0]
+            if not self._has_query_been_issued(search_context, candidate_query):
+                return candidate_query  # This query has not been issued before, so say it's the next one to issue!
+
+        return None
+
+
+
+
+    def _has_query_been_issued(self, search_context, query_candidate):
+        """
+        By examining previously examined queries in the search session, returns a boolean indicating whether
+        the query terms provided have been previously examined. True iif they have, False otherwise.
+        """
+        issued_query_list = search_context.get_issued_queries()
+        # this is a list of ifind.search.query objects
+
+        for query in issued_query_list:
+            query_str = query.terms
+
+            if query_candidate == query_str:
+                return True
+
+        return False

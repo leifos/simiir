@@ -9,10 +9,12 @@ class SmarterQueryGenerator(BaseQueryGenerator):
     """
     
     """
-    def _generate_topic_language_model(self, topic, search_context=None):
+    def _generate_topic_language_model(self, search_context):
         """
         
         """
+
+        topic = search_context.topic
 
         topic_text = topic.title
         topic_background = topic.content
@@ -31,13 +33,15 @@ class SmarterQueryGenerator(BaseQueryGenerator):
         return topic_language_model
 
 
-    def generate_query_list(self, topic, search_context=None):
+    def generate_query_list(self, search_context):
         """
         Given a Topic object, produces a list of query terms that could be issued by the simulated agent.
         """
+
+        topic = search_context.topic
         topic_text = topic.content
 
-        topic_lang_model = self._generate_topic_language_model(topic, search_context)
+        topic_lang_model = self._generate_topic_language_model(search_context)
 
         bi_query_generator = BiTermQueryGeneration(minlen=3, stopwordfile=self._stopword_file)
         tri_query_generator = TriTermQueryGeneration(minlen=3, stopwordfile=self._stopword_file)

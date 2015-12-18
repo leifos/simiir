@@ -7,11 +7,12 @@ class SingleTermQueryGeneratorReversed(SingleTermQueryGenerator):
     def __init__(self, stopword_file, background_file=[]):
         super(SingleTermQueryGeneratorReversed, self).__init__(stopword_file, background_file=background_file)
     
-    def generate_query_list(self, topic, search_context=None):
+    def generate_query_list(self, search_context):
         """
         Takes the query list from the underlying query generator (single term), and reverses it.
         """
-        queries = super(SingleTermQueryGeneratorReversed, self).generate_query_list(topic)
+        topic = search_context.topic
+        queries = super(SingleTermQueryGeneratorReversed, self).generate_query_list(search_context)
         queries.reverse()
 
         return queries

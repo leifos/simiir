@@ -12,6 +12,7 @@ class SimulatedUser(object):
         self.__logger = configuration.user.logger
         self.__document_classifier = configuration.user.document_classifier
         self.__snippet_classifier = configuration.user.snippet_classifier
+        self.__query_generator = configuration.user.query_generator
         
         self.__action_value = None  # Response from the previous action method - True or False? (did the user do or not do what they thought?)
     
@@ -110,16 +111,16 @@ class SimulatedUser(object):
         """
 
         # update the query generator with the latest search context.
-        #self.__query_generator.update_model(self.__search_context)
+        self.__query_generator.update_model(self.__search_context)
 
-        query_text = self.__search_context.get_next_query()
+        # Get a query from the generator.
+        query_text = self.__query_generator.get_next_query(self.__search_context)
         
         if query_text:
             self.__search_context.add_issued_query(query_text)  # Can also supply page number and page lengths here.
             self.__logger.log_action(Actions.QUERY, query=query_text)
             self.__output_controller.log_query(query_text)
 
-            #self.__output_controller.log_info(info_type=None, text="Query issued: {0}".format(query_text))
             return True
         
         self.__output_controller.log_info(info_type="OUT_OF_QUERIES")
@@ -219,6 +220,3 @@ class SimulatedUser(object):
             return Actions.QUERY
         
         return self.__decision_maker.decide()
-        
-    def log_query_list(self):
-        self.__search_context.log_query_list()

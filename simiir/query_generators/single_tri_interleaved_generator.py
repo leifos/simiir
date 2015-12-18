@@ -14,13 +14,15 @@ class SingleTriInterleavedQueryGenerator(BaseQueryGenerator):
         self.__single = SingleTermQueryGenerator( stopword_file, background_file)
         self.__tri = TriTermQueryGenerator(stopword_file, background_file)
 
-    def generate_query_list(self, topic, search_context=None):
+    def generate_query_list(self, search_context):
         """
         Given a Topic object, produces a list of query terms that could be issued by the simulated agent.
         """
 
-        single_queries = self.__single.generate_query_list(topic, search_context)
-        tri_queries = self.__tri.generate_query_list(topic, search_context)
+        topic = search_context.topic
+
+        single_queries = self.__single.generate_query_list(search_context)
+        tri_queries = self.__tri.generate_query_list(search_context)
         
         interleaved_queries = [val for pair in zip(single_queries, tri_queries) for val in pair]
         

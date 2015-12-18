@@ -12,18 +12,13 @@ class TrecTopicQueryGenerator(BaseQueryGenerator):
     """
 
 
-    def generate_query_list(self, topic, search_context=None):
+    def generate_query_list(self, search_context):
         """
         Given a Topic object, produces a list of query terms that could be issued by the simulated agent.
 
         """
+        topic = search_context.topic
+
         topic_text = topic.title
 
         return [ (topic_text, 1) ]
-
-
-    def _generate_topic_language_model(self, topic, search_context=None):
-        """
-
-        """
-        return None

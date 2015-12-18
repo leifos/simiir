@@ -12,14 +12,15 @@ class SingleTermQueryGenerator(BaseQueryGenerator):
     def __init__(self, stopword_file, background_file=[]):
         super(SingleTermQueryGenerator, self).__init__(stopword_file, background_file=background_file)
     
-    def generate_query_list(self, topic, search_context=None):
+    def generate_query_list(self, search_context):
         """
         Given a Topic object, produces a list of query terms that could be issued by the simulated agent.
         """
+        topic = search_context.topic
 
         topic_text = "{0} {1}".format(topic.title, topic.content)
 
-        topic_language_model = self._generate_topic_language_model(topic, search_context)
+        topic_language_model = self._generate_topic_language_model(search_context)
         
         generator = SingleQueryGeneration(minlen=3, stopwordfile=self._stopword_file)
         query_list = generator.extract_queries_from_text(topic_text)

@@ -12,17 +12,17 @@ class AdditionalQueryGenerator(SmarterQueryGenerator):
         super(AdditionalQueryGenerator, self).__init__(stopword_file, background_file=background_file)
         self.__title_stem_length = title_stem_length
         self.__description_cutoff = description_cutoff
+
         
-        print self.__title_stem_length
-        print self.__description_cutoff
-        
-    def generate_query_list(self, topic, search_context=None):
+    def generate_query_list(self, search_context):
         """
         Given a Topic object, produces a list of query terms that could be issued by the simulated agent.
-        """        
+        """
+
+        topic = search_context.topic
         topic_title = topic.title
         topic_description = topic.content
-        topic_language_model = self._generate_topic_language_model(topic)
+        topic_language_model = self._generate_topic_language_model(search_context)
         
         # Generate a series of query terms from the title, and then rank the generated terms.
         title_generator = SingleQueryGeneration(minlen=3, stopwordfile=self._stopword_file)

@@ -37,8 +37,7 @@
 	</logger>
 
 	<searchContext class="SearchContext">
-		<attribute name="query_formulation" type="integer" value="0" is_argument="false" />
-		<attribute name="relevance_revision" type="integer" value="1" is_argument="false" />
+        <attribute name="relevance_revision" type="integer" value="1" is_argument="false" />
 	</searchContext>
 
 </userConfiguration>

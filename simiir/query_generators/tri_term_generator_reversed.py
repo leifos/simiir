@@ -10,11 +10,12 @@ class TriTermQueryGeneratorReversed(TriTermQueryGenerator):
         super(TriTermQueryGeneratorReversed, self).__init__(stopword_file, background_file=background_file)
 
     
-    def generate_query_list(self, topic, search_context=None):
+    def generate_query_list(self, search_context):
         """
         Takes the query list from the underlying query generator (tri-term), and reverses it.
         """
-        queries = super(TriTermQueryGeneratorReversed, self).generate_query_list(topic, search_context)
+        topic = search_context.topic
+        queries = super(TriTermQueryGeneratorReversed, self).generate_query_list(search_context)
         queries.reverse()
 
         return queries
