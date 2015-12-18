@@ -11,8 +11,10 @@ class SingleReversedTriReversedInterleavedGenerator(BaseQueryGenerator):
     """
     def __init__(self, output_controller, stopword_file, background_file=[]):
         super(SingleReversedTriReversedInterleavedGenerator, self).__init__(output_controller, stopword_file, background_file=background_file)
-        self.__single = SingleTermQueryGeneratorReversed(output_controller, stopword_file, background_file, log_queries=False)
-        self.__tri = TriTermQueryGeneratorReversed(output_controller, stopword_file, background_file, log_queries=False)
+        self.__single = SingleTermQueryGeneratorReversed(output_controller, stopword_file, background_file)
+        self.__single.log_queries = False
+        self.__tri = TriTermQueryGeneratorReversed(output_controller, stopword_file, background_file)
+        self.__tri.log_queries = False
     
     def generate_query_list(self, topic, search_context=None):
         """

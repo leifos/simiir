@@ -21,15 +21,12 @@ class LMTextClassifier(BaseTextClassifier):
         self.make_topic_language_model()
 
         self.alpha = 1.0
-        self.lam = 0.5
+        self.lam = 0.1
         self.mu = 100.0
-        self.b = 0.75
         self.threshold = 0.0
         self.method = 'jm'
         self.doc_score = 0.0
-
-        self.avg_dl = 430.0
-
+        self.updating = False
 
     def make_topic_language_model(self):
         """
@@ -48,8 +45,21 @@ class LMTextClassifier(BaseTextClassifier):
         log.debug("Making topic {0}".format(self._topic.id))
 
 
+    def update_topic_model(self, document_list):
 
-    def update_topic_language_model(self, text_list):
+        if self.updating:
+            # iterate through document_list, pull out relevant snippets / text
+            rel_text_list = []
+            for doc in document_list:
+                if doc.judgment > 0:
+                    rel_text_list.append('{0} {1}'.format(doc.title, doc.content))
+            if rel_text_list:
+                self.__update_topic_language_model(rel_text_list)
+                return True
+            else:
+                return False
+
+    def __update_topic_language_model(self, text_list):
 
         topic_text = self._topic.content + self._topic.title
 
@@ -60,11 +70,8 @@ class LMTextClassifier(BaseTextClassifier):
         term_extractor.extract_queries_from_text(topic_text)
         topic_term_counts = term_extractor.query_count
 
-
-
         term_extractor.extract_queries_from_text(snippet_text)
         new_text_term_counts = term_extractor.query_count
-
 
         for term in topic_term_counts:
             if term in new_text_term_counts:
@@ -117,8 +124,7 @@ class LMTextClassifier(BaseTextClassifier):
 
         switch = {'jm': self.__get_jm_term_score,
                   'bs': self.__get_bs_term_score,
-                  'lp': self.__get_lp_term_score,
-                  'bm': self.__get_bm_term_score,
+                  'lp': self.__get_lp_term_score
                   }
 
 
@@ -164,24 +170,6 @@ class LMTextClassifier(BaseTextClassifier):
         else:
             return 0.0
 
-
-
-    def __get_bm_term_score(self, term):
-        topic_term_count = self.topic_language_model.get_num_occurrences(term)
-        total_term_count = self.topic_language_model.get_total_occurrences()
-
-        k1= 1.2
-
-        term_score =  topic_term_count * (k1+1.0) / ( topic_term_count + k1*(1-self.b) + self.b * total_term_count/ self.avg_dl )
-
-        cf = self.background_language_model.get_term_prob(term)
-        if cf == 0.0:
-            icf = 0.0
-        else:
-            icf = math.log(cf)
-
-        term_score = term_score * icf
-        return term_score
 
 
 

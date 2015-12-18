@@ -10,10 +10,12 @@ class SingleReversedTriInterleavedQueryGenerator(BaseQueryGenerator):
     Takes the SingleTermGeneratorReversed and the TriTermGenerator, and interleaves like [Single,Tri,Single,Tri,Single,Tri...]
     """
     def __init__(self, output_controller, stopword_file, background_file=[]):
-        super(SingleReversedTriInterleavedQueryGenerator, self).__init__(output_controller, stopword_file, background_file=background_file, topic_model=topic_model)
-        self.__single = SingleTermQueryGeneratorReversed(output_controller, stopword_file, background_file, log_queries=False)
-        self.__tri = TriTermQueryGenerator(output_controller, stopword_file, background_file, log_queries=False)
-    
+        super(SingleReversedTriInterleavedQueryGenerator, self).__init__(output_controller, stopword_file, background_file=background_file)
+        self.__single = SingleTermQueryGeneratorReversed(output_controller, stopword_file, background_file)
+        self.__single.log_queries = False
+        self.__tri = TriTermQueryGenerator(output_controller, stopword_file, background_file)
+        self.__tri.log_queries = False
+
     def generate_query_list(self, topic, search_context=None):
         """
         Given a Topic object, produces a list of query terms that could be issued by the simulated agent.

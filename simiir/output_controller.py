@@ -11,7 +11,8 @@ class OutputController(object):
         self.__save_interaction_log_flag = output_configuration['@saveInteractionLog']
         self.__save_relevance_judgments_flag = output_configuration['@saveRelevanceJudgments']
         self.__trec_eval_flag = output_configuration['@trec_eval']
-        
+
+        self.__save_config_log_flag = True
         self.__interaction_log = []
         self.__query_log = []
         
@@ -82,7 +83,33 @@ class OutputController(object):
         self.__save_interaction_log()
         self.__save_relevance_judgments()
         self.__save_query_log()
+        self.__save_simulation_config()
         self.__run_trec_eval()
+
+    def __save_simulation_config(self):
+        """
+        Save the setup of the simulation that was run (in a human readable form)
+        """
+        if self.__save_config_log_flag:
+            config_log_filename = '{0}.cfg'.format(self.__simulation_configuration.base_id)
+            config_log_filename = os.path.join(self.__base_directory, config_log_filename)
+
+            log_file = open(config_log_filename, 'w')
+
+            simulation_base_id = self.__simulation_configuration.base_id
+            log_file.write("SIMULATION '{0}'".format(simulation_base_id))
+            log_file.write(os.linesep)
+            log_file.write("{0}Simulation Configuration:".format(" "*self.output_indentation))
+            log_file.write(self.__simulation_configuration.prettify())
+            log_file.write(os.linesep)
+            log_file.write("{0}User Configuration ({1}):".format(" "*self.output_indentation, self.__simulation_configuration.user.id))
+            log_file.write(self.__simulation_configuration.user.prettify())
+            log_file.write(os.linesep)
+            search_context_summary = self.__simulation_configuration.user.search_context.report()
+            log_file.write(search_context_summary)
+
+            log_file.close()
+
     
     def __save_interaction_log(self):
         """

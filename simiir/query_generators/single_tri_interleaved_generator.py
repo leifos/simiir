@@ -11,9 +11,10 @@ class SingleTriInterleavedQueryGenerator(BaseQueryGenerator):
     """
     def __init__(self, output_controller, stopword_file, background_file=[]):
         super(SingleTriInterleavedQueryGenerator, self).__init__(output_controller, stopword_file, background_file=background_file)
-        self.__single = SingleTermQueryGenerator(output_controller, stopword_file, background_file, log_queries=False)
-        self.__tri = TriTermQueryGenerator(output_controller, stopword_file, background_file, log_queries=False)
-    
+        self.__single = SingleTermQueryGenerator(output_controller, stopword_file, background_file)
+        self.__single.log_queries = False
+        self.__tri = TriTermQueryGenerator(output_controller, stopword_file, background_file)
+        self.__tri.log_queries = False
     def generate_query_list(self, topic, search_context=None):
         """
         Given a Topic object, produces a list of query terms that could be issued by the simulated agent.

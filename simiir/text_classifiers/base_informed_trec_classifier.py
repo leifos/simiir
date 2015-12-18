@@ -56,7 +56,7 @@ class BaseInformedTrecTextClassifier(BaseTextClassifier):
         log.debug("No Topic model required for this Trec Classifier")
     
     
-    def _get_judgement(self, topic_id, doc_id):
+    def _get_judgment(self, topic_id, doc_id):
         """
         Helper function that returns the judgement of the document
         If the value does not exist in the qrels, it checks topic '0' - a non-existant topic, which you can put pre-rolled relevance values

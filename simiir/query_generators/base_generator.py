@@ -22,7 +22,7 @@ class BaseQueryGenerator(object):
     def __init__(self, output_controller, stopword_file, background_file=[]):  # TODO(dmax): stopwords_file to be a list!
         self._stopword_file = stopword_file
         self._background_file = background_file
-
+        self.log_queries = True
         self._output_controller = output_controller
     
     def _generate_topic_language_model(self, topic, search_context=None):
@@ -58,7 +58,9 @@ class BaseQueryGenerator(object):
         
         query_ranker = QueryRanker(smoothed_language_model=topic_lang_model)
         query_ranker.calculate_query_list_probabilities(query_list)
-        return query_ranker.get_top_queries(100)
+        gen_query_list = query_ranker.get_top_queries(100)
+        self._log_queries(gen_query_list)
+        return gen_query_list
 
 
     @abc.abstractmethod
@@ -82,8 +84,8 @@ class BaseQueryGenerator(object):
         For informational purposes, really.
         """
         count = 1
-        
-        for query in queries:
-            log.debug( query )
-            self._output_controller.log_query("{0} {1}".format(count, query[0]))
-            count = count + 1
+        if self.log_queries:
+            for query in queries:
+                log.debug( query )
+                self._output_controller.log_query("{0} {1}".format(count, query[0]))
+                count = count + 1

@@ -9,9 +9,8 @@ class SingleTermQueryGenerator(BaseQueryGenerator):
     A simple query generator - returns a set of queries consisting of only one term.
     These can be ranked by either the frequency of the term's occurrence, or by its perceived discriminatory value.
     """
-    def __init__(self, output_controller, stopword_file, background_file=[],  log_queries=True):
+    def __init__(self, output_controller, stopword_file, background_file=[]):
         super(SingleTermQueryGenerator, self).__init__(output_controller, stopword_file, background_file=background_file)
-        self.__log_queries = log_queries
     
     def generate_query_list(self, topic, search_context=None):
         """
@@ -30,7 +29,6 @@ class SingleTermQueryGenerator(BaseQueryGenerator):
         
         generated_queries = query_ranker.get_top_queries(100)
         
-        if self.__log_queries:
-            self._log_queries(generated_queries)
+        self._log_queries(generated_queries)
         
         return generated_queries

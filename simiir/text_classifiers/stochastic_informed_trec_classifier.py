@@ -29,7 +29,7 @@ class StochasticInformedTrecTextClassifier(BaseInformedTrecTextClassifier):
         """
         Rolls the dice, and decides whether a relevant document stays relevant or not (and similarly for a non-relevant).
         """
-        val = self._get_judgement(self._topic.id, document.doc_id)
+        val = self._get_judgment(self._topic.id, document.doc_id)
         dp = random()
         
         if val > 0: # if the judgement is relevant

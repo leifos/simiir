@@ -1,0 +1,43 @@
+<userConfiguration id="ifind-smartuser">
+
+	<queryGenerator class="SmarterQueryGenerator">
+		<attribute name="stopword_file" type="string" value="../example_data/terms/stopwords.txt" is_argument="true" />
+	</queryGenerator>
+
+	<textClassifiers>
+		<snippetClassifier class="IFindTextClassifier">
+            <attribute name="stopword_file" type="string" value="../example_data/terms/stopwords.txt" is_argument="true" />
+            <attribute name="background_file" type="string" value="../example_data/terms/vocab.txt" is_argument="true" />
+            <attribute name="threshold" type="float" value="-0.2" is_argument="false" />
+            <attribute name="mu" type="float" value="10" is_argument="false" />
+            <attribute name="updating" type="boolean" value="false" is_argument="false" />
+		</snippetClassifier>
+
+		<documentClassifier class="IFindTextClassifier">
+            <attribute name="stopword_file" type="string" value="../example_data/terms/stopwords.txt" is_argument="true" />
+            <attribute name="background_file" type="string" value="../example_data/terms/vocab.txt" is_argument="true" />
+            <attribute name="threshold" type="float" value="-0.2" is_argument="false" />
+            <attribute name="mu" type="float" value="100" is_argument="false" />
+            <attribute name="updating" type="boolean" value="false" is_argument="false" />
+		</documentClassifier>
+	</textClassifiers>
+
+	<stoppingDecisionMaker class="SequentialNonrelDecisionMakerSkip">
+        <attribute name="nonrelevant_threshold" type="integer" value="3" is_argument="true" />
+	</stoppingDecisionMaker>
+
+	<logger class="FixedCostLogger">
+		<attribute name="time_limit" type="integer" value="600" is_argument="true" />
+		<attribute name="query_cost" type="integer" value="10" is_argument="true" />
+		<attribute name="document_cost" type="integer" value="20" is_argument="true" />
+		<attribute name="snippet_cost" type="integer" value="3" is_argument="true" />
+		<attribute name="serp_results_cost" type="integer" value="5" is_argument="true" />
+		<attribute name="mark_document_cost" type="integer" value="3" is_argument="true" />
+	</logger>
+
+	<searchContext class="SearchContext">
+		<attribute name="query_formulation" type="integer" value="0" is_argument="false" />
+		<attribute name="relevance_revision" type="integer" value="1" is_argument="false" />
+	</searchContext>
+
+</userConfiguration>

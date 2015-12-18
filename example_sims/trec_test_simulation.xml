@@ -1,0 +1,45 @@
+<!--
+Simulation Configuration DTD
+
+Authors: Leif Azzopardi & David Maxwell
+Date:   2015-09-09
+-->
+
+<simulationConfiguration id="example_test_sim">
+
+	<output baseDirectory="../example_sims/output/"
+			saveInteractionLog="true"
+			saveRelevanceJudgments="true"
+			trec_eval="true" />
+
+	<topics>
+        <!--
+        These are the topics that each simulated user will complete
+        -->
+        <topic id="367" filename="../example_data/topics/topic.367" qrelsFilename="../example_data/qrels/trec2005.qrels" />
+        <topic id="347" filename="../example_data/topics/topic.347" qrelsFilename="../example_data/qrels/trec2005.qrels" />
+        <topic id="435" filename="../example_data/topics/topic.435" qrelsFilename="../example_data/qrels/trec2005.qrels" />
+ 	</topics>
+
+	<users>
+        <user configurationFile="../example_sims/users/lm_smart_user.xml" />
+        <user configurationFile="../example_sims/users/lm_smart_user_with_updating.xml" />
+        <user configurationFile="../example_sims/users/ifind_smart_user.xml" />
+        <user configurationFile="../example_sims/users/ifind_smart_user_with_updating.xml" />
+
+        <user configurationFile="../example_sims/users/smart_user.xml" />
+
+	</users>
+
+	<searchInterface class="WhooshSearchInterface">
+        <!--
+        This is the search interface that the simulated users will interact with
+        -->
+		<attribute name="whoosh_index_dir" type="string" value="../example_data/index" is_argument="true" />
+        <attribute name="implicit_or" type="boolean" value="1" is_argument="true" />
+         <!-- 0 - TFIDF, 1 - BM25, 2 - PL2 -->
+        <attribute name="model" type="integer" value="1" is_argument="true" />
+	</searchInterface>
+
+</simulationConfiguration>
+

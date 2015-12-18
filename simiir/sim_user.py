@@ -138,13 +138,14 @@ class SimulatedUser(object):
         Called when the user needs to make the decision whether to examine a snippet or not.
         The logic within this method supports previous observations of the same document, and whether the text within the snippet appears to be relevant.
         """
+        judgment = False
         snippet = self.__search_context.get_current_snippet()
         self.__search_context.increment_serp_position()
         
         if self.__search_context.get_document_observation_count(snippet) > 0:
             # This document has been previously seen; so we ignore it. But the higher the count, cumulated credibility could force us to examine it?
             self.__logger.log_action(Actions.SNIPPET, status="SEEN_PREVIOUSLY", doc_id=snippet.doc_id)
-            return False
+
         else:
             # This snippet has not been previously seen; check quality of snippet. Does it show some form of relevance?
             # If so, we return True - and if not, we return False, which moves the simulator to the next step.
@@ -154,12 +155,15 @@ class SimulatedUser(object):
             if self.__snippet_classifier.is_relevant(snippet):
                 snippet.judgment = 1
                 self.__logger.log_action(Actions.SNIPPET, status="SNIPPET_RELEVANT", doc_id=snippet.doc_id)
-                return True
+                judgment = True
             else:
                 snippet.judgment = 0
                 self.__logger.log_action(Actions.SNIPPET, status="SNIPPET_NOT_RELEVANT", doc_id=snippet.doc_id)
-                return False
-    
+
+            self.__snippet_classifier.update_topic_model(self.__search_context.get_all_examined_snippets())
+        return judgment
+
+
     def __do_assess_document(self):
         """
         Called when a document is to be assessed.

@@ -6,9 +6,9 @@ class TriTermQueryGeneratorReversed(TriTermQueryGenerator):
     The first two terms are drawn from the topic, with the final and third term selected from the description - in some ranked order.
     Reverses the queries.
     """
-    def __init__(self, output_controller, stopword_file, background_file=[],  log_queries=True):
-        super(TriTermQueryGeneratorReversed, self).__init__(output_controller, stopword_file, background_file=background_file, log_queries=False)
-        self.__log_queries = log_queries
+    def __init__(self, output_controller, stopword_file, background_file=[]):
+        super(TriTermQueryGeneratorReversed, self).__init__(output_controller, stopword_file, background_file=background_file)
+
     
     def generate_query_list(self, topic, search_context=None):
         """
@@ -17,7 +17,6 @@ class TriTermQueryGeneratorReversed(TriTermQueryGenerator):
         queries = super(TriTermQueryGeneratorReversed, self).generate_query_list(topic, search_context)
         queries.reverse()
         
-        if self.__log_queries:
-            self._log_queries(queries)
+        self._log_queries(queries)
         
         return queries

@@ -17,8 +17,11 @@ class IFindTextClassifier(BaseTextClassifier):
         
         """
         super(IFindTextClassifier, self).__init__(topic, stopword_file, background_file)
-        self.make_topic_language_model()
         self.threshold = 0.0
+        self.mu = 100.0
+        self.make_topic_language_model()
+
+
     
     def make_topic_language_model(self):
         """
@@ -31,7 +34,8 @@ class IFindTextClassifier(BaseTextClassifier):
         document_term_counts = document_extractor.query_count
         
         language_model = LanguageModel(term_dict=document_term_counts)
-        self.topic_language_model = SmoothedLanguageModel(language_model, self.background_language_model, 100)
+
+        self.topic_language_model = SmoothedLanguageModel(language_model, self.background_language_model, self.mu)
         log.debug("Making topic {0}".format(self.topic_language_model.docLM.total_occurrences))
     
     def is_relevant(self, document):
@@ -67,3 +71,45 @@ class IFindTextClassifier(BaseTextClassifier):
         else:
             return math.log(topic_term_prob/background_term_prob, 2)
 
+
+    def update_topic_model(self, document_list):
+
+        if self.updating:
+            # iterate through document_list, pull out relevant snippets / text
+            rel_text_list = []
+            for doc in document_list:
+                if doc.judgment > 0:
+                    rel_text_list.append('{0} {1}'.format(doc.title, doc.content))
+            if rel_text_list:
+                self.__update_topic_language_model(rel_text_list)
+                return True
+            else:
+                return False
+
+    def __update_topic_language_model(self, text_list):
+
+        topic_text = self._topic.content + self._topic.title + self._topic.title + self._topic.title
+
+        n = len(text_list)
+        snippet_text = ' '.join(text_list)
+
+        term_extractor = SingleQueryGeneration(minlen=3, stopwordfile=self._stopword_file)
+        term_extractor.extract_queries_from_text(topic_text)
+        topic_term_counts = term_extractor.query_count
+
+        term_extractor.extract_queries_from_text(snippet_text)
+        new_text_term_counts = term_extractor.query_count
+
+        for term in topic_term_counts:
+            if term in new_text_term_counts:
+                new_text_term_counts[term] += topic_term_counts[term]
+            else:
+                new_text_term_counts[term] = topic_term_counts[term]
+
+        new_language_model = LanguageModel(term_dict=new_text_term_counts)
+
+        self.topic_language_model = SmoothedLanguageModel(new_language_model, self.background_language_model, self.mu)
+
+
+
+        log.debug("Updating topic {0}".format(self._topic.id))

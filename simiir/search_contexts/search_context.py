@@ -439,7 +439,7 @@ class SearchContext(object):
         """
         Adds the given document to the irrelevant document list.
         """
-        print 'nr'
+
         self._relevance_revision.add_irrelevant_document(document)
     
     def get_current_serp_position(self):
