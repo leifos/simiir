@@ -160,7 +160,7 @@ class SimulatedUser(object):
                 snippet.judgment = 0
                 self.__logger.log_action(Actions.SNIPPET, status="SNIPPET_NOT_RELEVANT", doc_id=snippet.doc_id)
 
-            self.__snippet_classifier.update_topic_model(self.__search_context.get_all_examined_snippets())
+            self.__snippet_classifier.update_model(self.__search_context)
         return judgment
 
 
@@ -168,6 +168,7 @@ class SimulatedUser(object):
         """
         Called when a document is to be assessed.
         """
+        judgment = False
         if self.__search_context.get_last_query():
             document = self.__search_context.get_current_document()
             self.__logger.log_action(Actions.DOC, status="EXAMINING_DOCUMENT", doc_id=document.doc_id)
@@ -178,14 +179,16 @@ class SimulatedUser(object):
                 document.judgment = 1
                 self.__logger.log_action(Actions.DOC, status="CONSIDERED_RELEVANT", doc_id=document.doc_id)
                 self.__search_context.add_relevant_document(document)
-                return True
+                judgment = True
             else:
                 document.judgment = 0
                 self.__search_context.add_irrelevant_document(document)
                 self.__logger.log_action(Actions.DOC, status="CONSIDERED_NOT_RELEVANT", doc_id=document.doc_id)
-                return False
+                judgment = False
+
+            self.__document_classifier.update_model(self.__search_context)
         
-        return False
+        return judgment
     
     def __do_mark_document(self):
         """

@@ -45,9 +45,16 @@ class LMTextClassifier(BaseTextClassifier):
         log.debug("Making topic {0}".format(self._topic.id))
 
 
-    def update_topic_model(self, document_list):
+    def update_model(self, search_context):
 
         if self.updating:
+            ## Once we develop more update methods, it is probably worth making this a strategy
+            ## so that setting the update_method changes the list of documents to use.
+            if self.update_method == 1:
+                document_list = search_context.get_all_examined_documents()
+            else:
+                document_list = search_context.get_all_examined_snippets()
+
             # iterate through document_list, pull out relevant snippets / text
             rel_text_list = []
             for doc in document_list:

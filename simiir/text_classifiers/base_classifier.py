@@ -10,6 +10,7 @@ class BaseTextClassifier(object):
         self._topic = topic
         self.doc_score = 0.0
         self.updating = False
+        self.update_method = 1
         
         if self._background_file:
             self.read_in_background(self._background_file)
@@ -37,11 +38,12 @@ class BaseTextClassifier(object):
         self.background_language_model = LanguageModel(term_dict=vocab)
 
 
-    def update_topic_model(self, document_list):
+    def update_model(self, search_context):
         """
-        Enables the model of relevance/topic to be updated, based on the list of observed documents
+        Enables the model of relevance/topic to be updated, based on the search context
+        The update model based on the documents etc in the search context (i.e. memory of the user)
 
-        :param  document_list: a list of search_interface.document objects
+        :param  search_context: search_contexts.search_context object
         :return: returns True is topic model is updated.
         """
         return False

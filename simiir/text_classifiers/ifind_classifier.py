@@ -2,6 +2,7 @@ import math
 from ifind.common.language_model import LanguageModel
 from ifind.common.query_generation import SingleQueryGeneration
 from ifind.common.smoothed_language_model import SmoothedLanguageModel
+from simiir.search_contexts import search_context
 from simiir.text_classifiers.base_classifier import BaseTextClassifier
 import logging
 
@@ -72,9 +73,16 @@ class IFindTextClassifier(BaseTextClassifier):
             return math.log(topic_term_prob/background_term_prob, 2)
 
 
-    def update_topic_model(self, document_list):
+    def update_model(self, search_context):
 
         if self.updating:
+            ## Once we develop more update methods, it is probably worth making this a strategy
+            ## so that setting the update_method changes the list of documents to use.
+            if self.update_method == 1:
+                document_list = search_context.get_all_examined_documents()
+            else:
+                document_list = search_context.get_all_examined_snippets()
+
             # iterate through document_list, pull out relevant snippets / text
             rel_text_list = []
             for doc in document_list:

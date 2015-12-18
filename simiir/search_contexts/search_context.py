@@ -479,7 +479,8 @@ class SearchContext(object):
 
     def get_examined_snippets(self):
         """
-        Returns a list of Document objects representing all of the snippets examined by the simulated agent for the current query.
+        Returns a list of Document objects representing all of the snippets examined by the simulated agent
+        for the CURRENT QUERY.
         The most recent snippet to be examined is the last document in the list - i.e. snippets are listed in chronological order.
         An empty list indicates that no snippets have been examined for the current query.
         """
@@ -487,20 +488,34 @@ class SearchContext(object):
     
     def get_all_examined_snippets(self):
         """
-        Returns a list of Document objects representing all of the snippets examined by the simulated agent over the given search session.
+        Returns a list of Document objects representing all of the snippets examined by the simulated agent
+        over the ENTIRE SEARCH SESSION.
         The most recent snippet to be examined is the last document in the list - i.e. snippets are listed in chronological order.
         An empty list indicates that no snippets have been examined in the entire search session.
         """
         return self._all_snippets_examined
-    
+
+
     def get_examined_documents(self):
         """
-        Returns a list of Document objects representing all of the documents examined by the simulated agent for the current query.
+        Returns a list of Document objects representing all of the documents examined by the simulated agent
+        for the CURRENT QUERY.
         The most recent document examined is the last document in the list - i.e. examined documents are listed in chronological order.
         An empty list indicates that no documents have been examined for the current query.
         """
         return self._documents_examined
-    
+
+    def get_all_examined_documents(self):
+        """
+        Returns a list of Document objects representing all of the documents examined by the simulated agent
+        over the ENTIRE SEARCH SESSION.
+        The most recent document examined is the last document in the list - i.e. examined documents are listed in chronological order.
+        An empty list indicates that no documents have been examined for the current query.
+        """
+        return self._all_documents_examined
+
+
+
     def get_issued_queries(self):
         """
         Returns a list of all queries that have been issued for the given search session.
