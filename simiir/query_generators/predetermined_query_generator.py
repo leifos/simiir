@@ -15,11 +15,11 @@ class PredeterminedQueryGenerator(BaseQueryGenerator):
     The query file should be in the format (note CSV!)
         queryid,userid,topic,terms
     """
-    def __init__(self, output_controller, stopword_file, query_file, user, background_file=[]):
+    def __init__(self, stopword_file, query_file, user, background_file=[]):
         """
         Initialises the class.
         """
-        super(PredeterminedQueryGenerator, self).__init__(output_controller, stopword_file, background_file=[])
+        super(PredeterminedQueryGenerator, self).__init__(stopword_file, background_file=[])
         self.__query_filename = query_file
         self.__user = user
     
@@ -45,5 +45,5 @@ class PredeterminedQueryGenerator(BaseQueryGenerator):
         queries_file.close()
         
         sorted(queries, key=lambda x: x[1])
-        self._log_queries(queries)
+
         return queries

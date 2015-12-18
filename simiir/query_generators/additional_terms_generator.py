@@ -8,8 +8,8 @@ class AdditionalQueryGenerator(SmarterQueryGenerator):
     Given n fixed query terms, we then append query terms to the end of the fixed query m times.
     Fixed terms are derived from the topic title, appended terms from the topic description.
     """
-    def __init__(self, output_controller, stopword_file, background_file=[], title_stem_length=2, description_cutoff=10):
-        super(AdditionalQueryGenerator, self).__init__(output_controller, stopword_file, background_file=background_file)
+    def __init__(self, stopword_file, background_file=[], title_stem_length=2, description_cutoff=10):
+        super(AdditionalQueryGenerator, self).__init__(stopword_file, background_file=background_file)
         self.__title_stem_length = title_stem_length
         self.__description_cutoff = description_cutoff
         
@@ -38,7 +38,6 @@ class AdditionalQueryGenerator(SmarterQueryGenerator):
         description_query_list = self._rank_terms(description_query_list, topic_language_model=topic_language_model)
         
         query_permutations = self.__generate_permutations(topic_language_model, title_stem, description_query_list)
-        self._log_queries(query_permutations)
         return query_permutations
     
     def _rank_terms(self, terms, **kwargs):

@@ -11,6 +11,8 @@
             <attribute name="threshold" type="float" value="-0.2" is_argument="false" />
             <attribute name="mu" type="float" value="10" is_argument="false" />
             <attribute name="updating" type="boolean" value="true" is_argument="false" />
+            <attribute name="update_method" type="integer" value="2" is_argument="false" />
+
 		</snippetClassifier>
 
 		<documentClassifier class="IFindTextClassifier">
@@ -19,6 +21,7 @@
             <attribute name="threshold" type="float" value="-0.2" is_argument="false" />
             <attribute name="mu" type="float" value="100" is_argument="false" />
             <attribute name="updating" type="boolean" value="true" is_argument="false" />
+            <attribute name="update_method" type="integer" value="1" is_argument="false" />
 		</documentClassifier>
 	</textClassifiers>
 

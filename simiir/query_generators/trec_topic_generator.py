@@ -18,7 +18,7 @@ class TrecTopicQueryGenerator(BaseQueryGenerator):
 
         """
         topic_text = topic.title
-        self._log_queries([(topic_text, 1)])
+
         return [ (topic_text, 1) ]
 
 

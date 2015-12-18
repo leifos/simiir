@@ -7,8 +7,8 @@ class TriTermQueryGenerator(BaseQueryGenerator):
     Implementing Strategy 3 from Heikki's 2009 paper, generating three-term queries.
     The first two terms are drawn from the topic, with the final and third term selected from the description - in some ranked order.
     """
-    def __init__(self, output_controller, stopword_file, background_file=[]):
-        super(TriTermQueryGenerator, self).__init__(output_controller, stopword_file, background_file=background_file)
+    def __init__(self, stopword_file, background_file=[]):
+        super(TriTermQueryGenerator, self).__init__(stopword_file, background_file=background_file)
 
     
     def generate_query_list(self, topic, search_context=None):
@@ -36,7 +36,6 @@ class TriTermQueryGenerator(BaseQueryGenerator):
         
         generated_permutations = self.__generate_permutations(topic_language_model, title_query_list, description_query_list)
 
-        self._log_queries(generated_permutations)
         
         return generated_permutations
     

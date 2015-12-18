@@ -17,7 +17,7 @@ class UserComponentGenerator(BaseComponentGenerator):
         # Create the user's query generator.
         self.query_generator = self._get_object_reference(config_details=self._config_dict['queryGenerator'],
                                                           package='query_generators',
-                                                          components=[('output_controller', self.__simulation_components.output)])
+                                                          components=[])
         
         # Create the user's snippet classifier.
         self.snippet_classifier = self._get_object_reference(config_details=self._config_dict['textClassifiers']['snippetClassifier'],

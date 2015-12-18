@@ -51,6 +51,5 @@ class SmarterQueryGenerator(BaseQueryGenerator):
         query_ranker.calculate_query_list_probabilities(query_list)
         gen_query_list = query_ranker.get_top_queries(100)
 
-        self._log_queries(gen_query_list)
 
         return gen_query_list
