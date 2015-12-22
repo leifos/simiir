@@ -58,7 +58,7 @@ class FixedCostLogger(BaseLogger):
             Actions.SERP   : kwargs.get('status'),
             Actions.SNIPPET: "{0} {1}".format(kwargs.get('status'), kwargs.get('doc_id')),
             Actions.DOC    : "{0} {1}".format(kwargs.get('status'), kwargs.get('doc_id')),
-            Actions.MARK   : "{0}".format(kwargs.get('doc_id')),
+            Actions.MARK   : "{0} {1}".format(kwargs.get('status'), kwargs.get('doc_id')),
         }
         
         base = super(FixedCostLogger, self)._report(action, **kwargs)
