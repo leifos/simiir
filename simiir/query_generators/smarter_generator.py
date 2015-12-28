@@ -4,6 +4,8 @@ from ifind.common.query_generation import SingleQueryGeneration
 from ifind.common.smoothed_language_model import BayesLanguageModel, SmoothedLanguageModel
 from ifind.common.query_generation import SingleQueryGeneration, BiTermQueryGeneration, TriTermQueryGeneration
 from ifind.common.query_ranker import QueryRanker
+from bs4 import BeautifulSoup
+
 
 class SmarterQueryGenerator(BaseQueryGenerator):
     """
@@ -13,8 +15,7 @@ class SmarterQueryGenerator(BaseQueryGenerator):
     def __init__(self, stopword_file, background_file=None):
         super(SmarterQueryGenerator, self).__init__(stopword_file, background_file=background_file)
         self.topic_lang_model = None
-        self.title_weight = 1
-
+        self.title_weight = 3
 
 
     def _make_topic_text(self, search_context):
@@ -52,6 +53,8 @@ class SmarterQueryGenerator(BaseQueryGenerator):
 
         all_text = topic_text + ' ' + snip_text
 
+        all_text = self.__check_terms(all_text)
+
         #bi_query_generator = BiTermQueryGeneration(minlen=3, stopwordfile=self._stopword_file)
         tri_query_generator = TriTermQueryGeneration(minlen=3, stopwordfile=self._stopword_file)
 
@@ -62,11 +65,28 @@ class SmarterQueryGenerator(BaseQueryGenerator):
         query_list = tri_query_list
 
 
+
+
         query_ranker = QueryRanker(smoothed_language_model=self.topic_lang_model)
         query_ranker.calculate_query_list_probabilities(query_list)
         gen_query_list = query_ranker.get_top_queries(100)
 
         return gen_query_list
+
+
+
+    def __check_terms(self, text):
+        if self.background_language_model is None:
+            return text
+
+        term_list = text.split()
+        checked_term_list = []
+        for term in term_list:
+            if self.background_language_model.get_num_occurrences(term)>0:
+                checked_term_list.append(term)
+
+        return ' '.join(checked_term_list)
+
 
 
     def update_model(self, search_context):
@@ -75,23 +95,25 @@ class SmarterQueryGenerator(BaseQueryGenerator):
             return False
 
         snippet_text = self.__get_snip_text(search_context)
+        snippet_text = self.__check_terms(snippet_text)
 
         if snippet_text:
-            snippet_term_counts = self._extract_term_dict_from_text(snippet_text)
-
             topic_text = self._get_topic_text(search_context)
+            all_text = '{0} {1}'.format(topic_text, snippet_text)
 
-            topic_term_counts = self._extract_term_dict_from_text(topic_text)
+            #snippet_term_counts = self._extract_term_dict_from_text(snippet_text)
+            #topic_term_counts = self._extract_term_dict_from_text(topic_text)
+            #title_language_model = LanguageModel(term_dict=topic_term_counts)
+            #snippet_language_model = LanguageModel(term_dict=snippet_term_counts)
+            #topic_language_model = BayesLanguageModel(title_language_model, snippet_language_model, beta=10)
 
-            title_language_model = LanguageModel(term_dict=topic_term_counts)
-            snippet_language_model = LanguageModel(term_dict=snippet_term_counts)
+            term_counts = self._extract_term_dict_from_text(all_text)
 
+            language_model = LanguageModel(term_dict=term_counts)
 
-            topic_language_model = BayesLanguageModel(title_language_model, snippet_language_model, beta=10)
-
-            self.topic_lang_model = topic_language_model
+            self.topic_lang_model = language_model
             if self.background_language_model:
-                smoothed_topic_language_model = SmoothedLanguageModel(topic_language_model,self.background_language_model)
+                smoothed_topic_language_model = SmoothedLanguageModel(language_model,self.background_language_model)
                 self.topic_lang_model = smoothed_topic_language_model
 
 
@@ -112,6 +134,9 @@ class SmarterQueryGenerator(BaseQueryGenerator):
         if rel_text_list:
             snippet_text = ' '.join(rel_text_list)
 
-        return snippet_text
+
+        snippet_soup = BeautifulSoup(snippet_text,'html.parser')
+
+        return snippet_soup.get_text()
 
 
