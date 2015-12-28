@@ -55,14 +55,14 @@ class SmarterQueryGenerator(BaseQueryGenerator):
 
         all_text = self.__check_terms(all_text)
 
-        #bi_query_generator = BiTermQueryGeneration(minlen=3, stopwordfile=self._stopword_file)
+        bi_query_generator = BiTermQueryGeneration(minlen=3, stopwordfile=self._stopword_file)
         tri_query_generator = TriTermQueryGeneration(minlen=3, stopwordfile=self._stopword_file)
 
         tri_query_list = tri_query_generator.extract_queries_from_text(all_text)
-        #bi_query_list = bi_query_generator.extract_queries_from_text(all_text)
+        bi_query_list = bi_query_generator.extract_queries_from_text(all_text)
 
-        #query_list = tri_query_list + bi_query_list
-        query_list = tri_query_list
+        query_list = tri_query_list + bi_query_list
+        #query_list = tri_query_list
 
 
 
