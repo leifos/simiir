@@ -184,13 +184,13 @@ class SimulatedUser(object):
             
             if self.__document_classifier.is_relevant(document):
                 document.judgment = 1
-                self.__logger.log_action(Actions.DOC, status="CONSIDERED_RELEVANT", doc_id=document.doc_id)
+                #self.__logger.log_action(Actions.MARK, status="CONSIDERED_RELEVANT", doc_id=document.doc_id)
                 self.__search_context.add_relevant_document(document)
                 judgment = True
             else:
                 document.judgment = 0
                 self.__search_context.add_irrelevant_document(document)
-                self.__logger.log_action(Actions.DOC, status="CONSIDERED_NOT_RELEVANT", doc_id=document.doc_id)
+                #self.__logger.log_action(Actions.MARK, status="CONSIDERED_NOT_RELEVANT", doc_id=document.doc_id)
                 judgment = False
 
             self.__document_classifier.update_model(self.__search_context)
@@ -201,8 +201,13 @@ class SimulatedUser(object):
         """
         The outcome of marking a document as relevant. At this stage, the user has decided that the document is relevant; hence True can be the only result.
         """
+        judgement_message = {0: 'CONSIDERED_NOT_RELEVANT', 1: 'CONSIDERED_RELEVANT'}
+        
         document = self.__search_context.get_current_document()
-        self.__logger.log_action(Actions.MARK, doc_id=document.doc_id)
+        
+        self.__logger.log_action(Actions.MARK, status=judgement_message[document.judgment], doc_id=document.doc_id)
+        
+        #self.__logger.log_action(Actions.MARK, doc_id=document.doc_id)
         return True
     
     def __do_decide(self):
