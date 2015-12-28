@@ -18,8 +18,6 @@ class LMTextClassifier(BaseTextClassifier):
 
         """
         super(LMTextClassifier, self).__init__(topic, stopword_file, background_file)
-        self.make_topic_language_model()
-
         self.alpha = 1.0
         self.lam = 0.1
         self.mu = 100.0
@@ -27,12 +25,23 @@ class LMTextClassifier(BaseTextClassifier):
         self.method = 'jm'
         self.doc_score = 0.0
         self.updating = False
+        self.title_weight = 1
+        self.make_topic_language_model()
+
+
+
+
+    def _make_topic_text(self):
+
+        title_text = '{0} '.format(self._topic.title) * self.title_weight
+        topic_text = '{0} {1}'.format(title_text,self._topic.content)
+        return topic_text
 
     def make_topic_language_model(self):
         """
 
         """
-        topic_text = self._topic.content + self._topic.title
+        topic_text = self._make_topic_text()
 
         document_extractor = SingleQueryGeneration(minlen=3, stopwordfile=self._stopword_file)
         document_extractor.extract_queries_from_text(topic_text)
@@ -68,7 +77,7 @@ class LMTextClassifier(BaseTextClassifier):
 
     def __update_topic_language_model(self, text_list):
 
-        topic_text = self._topic.content + self._topic.title
+        topic_text = self._make_topic_text()
 
         n = len(text_list)
         snippet_text = ' '.join(text_list)
@@ -102,11 +111,11 @@ class LMTextClassifier(BaseTextClassifier):
         count = 0.0
 
         for term in document.title.split(' '):
-            score = score + self.__get_term_score(term)
+            score = score + self.get_term_score(term)
             count = count + 1.0
 
         for term in document.content.split(' '):
-            score = score + self.__get_term_score(term)
+            score = score + self.get_term_score(term)
             count = count + 1.0
 
         self.doc_score = (score/count)
@@ -115,19 +124,10 @@ class LMTextClassifier(BaseTextClassifier):
 
         return False
 
-    def __get_term_score(self, term):
+    def get_term_score(self, term):
         """
         Returns a probability score for the given term when considering both the background and topic language models.
         """
-        #topic_term_prob = self.topic_language_model.get_term_prob(term)
-        #background_term_prob = self.background_language_model.get_term_prob(term)
-
-        #if background_term_prob == 0.0:
-        #    return 0.0
-        #else:
-        #    return math.log(topic_term_prob/background_term_prob, 2)
-
-
 
         switch = {'jm': self.__get_jm_term_score,
                   'bs': self.__get_bs_term_score,
@@ -143,9 +143,9 @@ class LMTextClassifier(BaseTextClassifier):
         topic_term_prob = self.topic_language_model.get_term_prob(term)
         background_term_prob = self.background_language_model.get_term_prob(term)
 
-        term_score = self.lam * topic_term_prob + (1-self.lam) * background_term_prob
+        term_score = self.lam * topic_term_prob + (1.0-self.lam) * background_term_prob
         if term_score > 0.0 and background_term_prob > 0.0:
-            return math.log(term_score/background_term_prob,2)
+            return math.log(term_score/background_term_prob,2.0)
         else:
             return 0.0
 
@@ -156,7 +156,7 @@ class LMTextClassifier(BaseTextClassifier):
         n = self.topic_language_model.get_total_occurrences()
         term_score =  (topic_term_count + self.mu * background_term_prob)/(n+self.mu)
         if term_score > 0.0 and background_term_prob > 0.0:
-            return math.log(term_score/background_term_prob,2)
+            return math.log(term_score/background_term_prob,2.0)
         else:
             return 0.0
 
@@ -173,7 +173,7 @@ class LMTextClassifier(BaseTextClassifier):
             background_term_prob = 1.0/float(v);
         term_score = (float(topic_term_count) + float(self.alpha))/(float(n) + float(v)*float(self.alpha))
         if term_score > 0.0 and background_term_prob > 0.0:
-            return math.log(term_score/background_term_prob,2)
+            return math.log(term_score/background_term_prob,2.0)
         else:
             return 0.0
 

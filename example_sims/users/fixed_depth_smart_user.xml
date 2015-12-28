@@ -1,0 +1,42 @@
+<userConfiguration id="fixeddepthuser">
+
+	<queryGenerator class="SmarterQueryGenerator">
+		<attribute name="id" type="integer" value="13" is_argument="false" />
+        <attribute name="stopword_file" type="string" value="../example_data/terms/stopwords.txt" is_argument="true" />
+	    <attribute name="updating" type="boolean" value="true" is_argument="false" />
+    </queryGenerator>
+
+	<textClassifiers>
+		<snippetClassifier class="StochasticInformedTrecTextClassifier">
+            <attribute name="qrel_file" type="string" value="../example_data/qrels/trec2005.qrels.all" is_argument="true" />
+            <attribute name="rprob" type="float" value="0.8" is_argument="true" />
+            <attribute name="nprob" type="float" value="0.3" is_argument="true" />
+			<attribute name="data_handler" type="integer" value="0" is_argument="false" />
+		</snippetClassifier>
+
+		<documentClassifier class="StochasticInformedTrecTextClassifier">
+            <attribute name="qrel_file" type="string" value="../example_data/qrels/trec2005.qrels.all" is_argument="true" />
+            <attribute name="rprob" type="float" value="0.8" is_argument="true" />
+            <attribute name="nprob" type="float" value="0.3" is_argument="true" />
+			<attribute name="data_handler" type="integer" value="0" is_argument="false" />
+		</documentClassifier>
+	</textClassifiers>
+
+	<stoppingDecisionMaker class="FixedDepthDecisionMaker">
+        <attribute name="depth" type="integer" value="5" is_argument="true" />
+	</stoppingDecisionMaker>
+
+	<logger class="FixedCostLogger">
+		<attribute name="time_limit" type="integer" value="600" is_argument="true" />
+		<attribute name="query_cost" type="integer" value="10" is_argument="true" />
+		<attribute name="document_cost" type="integer" value="20" is_argument="true" />
+		<attribute name="snippet_cost" type="integer" value="3" is_argument="true" />
+		<attribute name="serp_results_cost" type="integer" value="5" is_argument="true" />
+		<attribute name="mark_document_cost" type="integer" value="3" is_argument="true" />
+	</logger>
+
+	<searchContext class="SearchContext">
+		<attribute name="relevance_revision" type="integer" value="1" is_argument="false" />
+	</searchContext>
+
+</userConfiguration>

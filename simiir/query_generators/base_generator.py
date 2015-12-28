@@ -9,9 +9,6 @@ import logging
 log = logging.getLogger('query_generators.base_generator')
 
 
-
-
-
 class BaseQueryGenerator(object):
     """
     The base query generator class.
@@ -40,7 +37,7 @@ class BaseQueryGenerator(object):
         document_extractor.extract_queries_from_text(topic_text)
         document_term_counts = document_extractor.query_count
 
-        # The langauge model we return is simply a representtaion of the number of times terms occur within the topic text.
+        # The language model we return is simply a representation of the number of times terms occur within the topic text.
         topic_language_model = LanguageModel(term_dict=document_term_counts)
         return topic_language_model
 

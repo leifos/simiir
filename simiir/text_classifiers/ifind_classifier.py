@@ -28,8 +28,8 @@ class IFindTextClassifier(BaseTextClassifier):
         """
         
         """
-        topic_text = self._topic.content + self._topic.title + self._topic.title + self._topic.title
-        
+        topic_text = '{title} {title} {title} {content}'.format(**self._topic.__dict__)
+
         document_extractor = SingleQueryGeneration(minlen=3, stopwordfile=self._stopword_file)
         document_extractor.extract_queries_from_text(topic_text)
         document_term_counts = document_extractor.query_count
@@ -70,7 +70,7 @@ class IFindTextClassifier(BaseTextClassifier):
         if background_term_prob == 0.0:
             return 0.0
         else:
-            return math.log(topic_term_prob/background_term_prob, 2)
+            return math.log(topic_term_prob/background_term_prob, 2.0)
 
 
     def update_model(self, search_context):
@@ -96,7 +96,7 @@ class IFindTextClassifier(BaseTextClassifier):
 
     def __update_topic_language_model(self, text_list):
 
-        topic_text = self._topic.content + self._topic.title + self._topic.title + self._topic.title
+        topic_text =  '{title} {title} {title} {content}'.format(**self._topic.__dict__)
 
         n = len(text_list)
         snippet_text = ' '.join(text_list)
