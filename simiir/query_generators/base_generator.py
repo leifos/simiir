@@ -17,12 +17,16 @@ class BaseQueryGenerator(object):
 
     You can use this to inherit from to make your own query generator
     """
-    def __init__(self, stopword_file, background_file=[]):
+    def __init__(self, stopword_file, background_file=None):
         self._stopword_file = stopword_file
         self._background_file = background_file
         self.updating = False
         self.update_method = 1
         self._query_list = None
+        self.background_language_model = None
+
+        if self._background_file:
+            self.read_in_background(self._background_file)
 
     def _generate_topic_language_model(self, search_context):
 
@@ -124,3 +128,35 @@ class BaseQueryGenerator(object):
                 return True
 
         return False
+
+
+    def _extract_term_dict_from_text(self, text):
+        """
+        takes text, parses it, and counts how many times each term occurs.
+        :param text: a string
+        :return: a dict of {term, count}
+        """
+        single_term_text_extractor = SingleQueryGeneration(minlen=3, stopwordfile=self._stopword_file)
+        single_term_text_extractor.extract_queries_from_text(text)
+        term_counts_dict = single_term_text_extractor.query_count
+        return term_counts_dict
+
+    def _get_topic_text(self, search_context):
+        topic = search_context.topic
+        topic_text = '{title} {content}'.format(**topic.__dict__)
+        return topic_text
+
+
+    def read_in_background(self, vocab_file):
+        """
+        Helper method to read in a file containing terms and construct a background language model.
+        """
+        vocab = {}
+        f = open(vocab_file, 'r')
+
+        for line in f:
+            tc = line.split(',')
+            vocab[tc[0]] = int(tc[1])
+
+        f.close()
+        self.background_language_model = LanguageModel(term_dict=vocab)

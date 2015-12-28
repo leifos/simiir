@@ -1,8 +1,8 @@
 import os
 import abc
-from loggers import Actions
+from simiir.loggers import Actions
 from ifind.search.query import Query
-from search_interfaces import Document
+from simiir.search_interfaces import Document
 import logging
 
 log = logging.getLogger('search_context.search_context')
