@@ -4,6 +4,7 @@ from ifind.common.language_model import LanguageModel
 from ifind.common.query_generation import SingleQueryGeneration
 from simiir.text_classifiers.base_classifier import BaseTextClassifier
 from ifind.common.smoothed_language_model import SmoothedLanguageModel
+from simiir.utils.lm_methods import extract_term_dict_from_text
 import logging
 
 log = logging.getLogger('lm_classifer.LMTextClassifier')
@@ -29,23 +30,19 @@ class LMTextClassifier(BaseTextClassifier):
         self.make_topic_language_model()
 
 
-
-
-    def _make_topic_text(self):
+    def _make_topic_text(self, **kwargs):
 
         title_text = '{0} '.format(self._topic.title) * self.title_weight
         topic_text = '{0} {1}'.format(title_text,self._topic.content)
         return topic_text
+
 
     def make_topic_language_model(self):
         """
 
         """
         topic_text = self._make_topic_text()
-
-        document_extractor = SingleQueryGeneration(minlen=3, stopwordfile=self._stopword_file)
-        document_extractor.extract_queries_from_text(topic_text)
-        document_term_counts = document_extractor.query_count
+        document_term_counts = extract_term_dict_from_text(topic_text, self._stopword_file)
 
         language_model = LanguageModel(term_dict=document_term_counts)
         self.topic_language_model = language_model
@@ -55,7 +52,12 @@ class LMTextClassifier(BaseTextClassifier):
 
 
     def update_model(self, search_context):
+        """
+        If updating is enabled, updates the underlying language model with the new snippet/document text.
+        Returns True iif the language model is updated; False otherwise.
 
+        When self.update_method==1, documents are considered; else snippets.
+        """
         if self.updating:
             ## Once we develop more update methods, it is probably worth making this a strategy
             ## so that setting the update_method changes the list of documents to use.
@@ -70,14 +72,15 @@ class LMTextClassifier(BaseTextClassifier):
                 if doc.judgment > 0:
                     rel_text_list.append('{0} {1}'.format(doc.title, doc.content))
             if rel_text_list:
-                self.__update_topic_language_model(rel_text_list)
+                self._update_topic_language_model(rel_text_list)
                 return True
             else:
                 return False
 
-    def __update_topic_language_model(self, text_list):
+        return False
 
-        topic_text = self._make_topic_text()
+    def _update_topic_language_model(self, text_list):
+        topic_text = self._make_topic_text(document_text=text_list)
 
         n = len(text_list)
         snippet_text = ' '.join(text_list)
