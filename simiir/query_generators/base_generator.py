@@ -1,9 +1,11 @@
 import abc
 from whoosh.lang.porter import stem
+from simiir.utils import lm_methods
 from ifind.common.query_ranker import QueryRanker
 from ifind.common.language_model import LanguageModel
 from ifind.common.query_generation import SingleQueryGeneration, BiTermQueryGeneration, TriTermQueryGeneration
 from ifind.common.smoothed_language_model import BayesLanguageModel
+
 import logging
 
 log = logging.getLogger('query_generators.base_generator')
@@ -26,7 +28,7 @@ class BaseQueryGenerator(object):
         self.background_language_model = None
 
         if self._background_file:
-            self.read_in_background(self._background_file)
+            self.background_language_model = lm_methods.read_in_background(self._background_file)
 
     def _generate_topic_language_model(self, search_context):
 
@@ -37,9 +39,7 @@ class BaseQueryGenerator(object):
         topic = search_context.topic
         topic_text = "{0} {1}".format(topic.title, topic.content)
 
-        document_extractor = SingleQueryGeneration(minlen=3, stopwordfile=self._stopword_file)
-        document_extractor.extract_queries_from_text(topic_text)
-        document_term_counts = document_extractor.query_count
+        document_term_counts = lm_methods.extract_term_dict_from_text(topic_text, self._stopword_file)
 
         # The language model we return is simply a representation of the number of times terms occur within the topic text.
         topic_language_model = LanguageModel(term_dict=document_term_counts)
@@ -109,10 +109,8 @@ class BaseQueryGenerator(object):
                 return candidate_query  # This query has not been issued before, so say it's the next one to issue!
 
         return None
-
-
-
-
+    
+    
     def _has_query_been_issued(self, search_context, query_candidate):
         """
         By examining previously examined queries in the search session, returns a boolean indicating whether
@@ -128,35 +126,3 @@ class BaseQueryGenerator(object):
                 return True
 
         return False
-
-
-    def _extract_term_dict_from_text(self, text):
-        """
-        takes text, parses it, and counts how many times each term occurs.
-        :param text: a string
-        :return: a dict of {term, count}
-        """
-        single_term_text_extractor = SingleQueryGeneration(minlen=3, stopwordfile=self._stopword_file)
-        single_term_text_extractor.extract_queries_from_text(text)
-        term_counts_dict = single_term_text_extractor.query_count
-        return term_counts_dict
-
-    def _get_topic_text(self, search_context):
-        topic = search_context.topic
-        topic_text = '{title} {content}'.format(**topic.__dict__)
-        return topic_text
-
-
-    def read_in_background(self, vocab_file):
-        """
-        Helper method to read in a file containing terms and construct a background language model.
-        """
-        vocab = {}
-        f = open(vocab_file, 'r')
-
-        for line in f:
-            tc = line.split(',')
-            vocab[tc[0]] = int(tc[1])
-
-        f.close()
-        self.background_language_model = LanguageModel(term_dict=vocab)

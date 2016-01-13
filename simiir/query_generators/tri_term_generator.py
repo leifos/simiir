@@ -1,5 +1,6 @@
 from ifind.common.query_ranker import QueryRanker
 from ifind.common.query_generation import SingleQueryGeneration
+from simiir.utils import lm_methods
 from simiir.query_generators.base_generator import BaseQueryGenerator
 
 class TriTermQueryGenerator(BaseQueryGenerator):
@@ -42,14 +43,9 @@ class TriTermQueryGenerator(BaseQueryGenerator):
     
     def _rank_terms(self, terms, **kwargs):
         """
-        Ranks the query terms by their discriminatory power.
-        The length of the list returned == list of initial terms supplied.
+        Ranks terms according to their discriminatory power.
         """
-        topic_language_model = kwargs.get('topic_language_model', None)
-        
-        ranker = QueryRanker(smoothed_language_model=topic_language_model)
-        ranker.calculate_query_list_probabilities(terms)
-        return ranker.get_top_queries(len(terms))
+        return lm_methods.rank_terms(terms, **kwargs)
     
     def __get_title_combinations(self, topic_language_model, title_query_list):
         """

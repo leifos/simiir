@@ -8,7 +8,7 @@ from ifind.common.smoothed_language_model import BayesLanguageModel
 
 class TrecTopicQueryGenerator(BaseQueryGenerator):
     """
-        TREC topic Query - only generates one query.
+        TREC topic Query - only generates one query from the topic title.
     """
 
 
@@ -18,7 +18,6 @@ class TrecTopicQueryGenerator(BaseQueryGenerator):
 
         """
         topic = search_context.topic
-
         topic_text = topic.title
 
         return [ (topic_text, 1) ]

@@ -1,5 +1,6 @@
 from ifind.common.query_ranker import QueryRanker
 from ifind.common.query_generation import SingleQueryGeneration
+from simiir.utils import lm_methods
 from simiir.query_generators.smarter_generator import SmarterQueryGenerator
 
 class BiTermQueryGenerator(SmarterQueryGenerator):
@@ -31,18 +32,13 @@ class BiTermQueryGenerator(SmarterQueryGenerator):
         generated_permutations = self.__generate_permutations(topic_language_model, title_query_list, description_query_list)
 
         return generated_permutations
-    
+
     def _rank_terms(self, terms, **kwargs):
         """
-        Ranks the query terms by their discriminatory power.
-        The length of the list returned == list of initial terms supplied.
+        Ranks terms according to their discriminatory power.
         """
-        topic_language_model = kwargs.get('topic_language_model', None)
-        
-        ranker = QueryRanker(smoothed_language_model=topic_language_model)
-        ranker.calculate_query_list_probabilities(terms)
-        return ranker.get_top_queries(len(terms))
-    
+        return lm_methods.rank_terms(terms, **kwargs)
+
     def __generate_permutations(self, topic_language_model, title_query_list, description_query_list):
         """
         Returns a list of ranked permutations for each title term.

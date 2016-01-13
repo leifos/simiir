@@ -49,6 +49,12 @@ class Topic(Document):
         self.title = first_line
         self.content = topic_text
 
+    def get_topic_text(self):
+        """
+        Returns a string representing the topic's title and content (description).
+        """
+        return '{title} {content}'.format(**self.__dict__)
+
     def __str__(self):
         """
         Returns a string representation of a given instance of Topic.

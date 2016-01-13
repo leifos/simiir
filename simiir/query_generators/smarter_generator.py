@@ -1,4 +1,5 @@
 from simiir.query_generators.base_generator import BaseQueryGenerator
+from simiir.utils import lm_methods
 from ifind.common.language_model import LanguageModel
 from ifind.common.query_generation import SingleQueryGeneration
 from ifind.common.smoothed_language_model import BayesLanguageModel, SmoothedLanguageModel
@@ -29,7 +30,7 @@ class SmarterQueryGenerator(BaseQueryGenerator):
         creates an empirical language model based on the search topic, or a smoothed language model if a background model has been loaded.
         """
         topic_text = self._make_topic_text(search_context)
-        topic_term_counts = self._extract_term_dict_from_text(topic_text)
+        topic_term_counts = lm_methods.extract_term_dict_from_text(topic_text, self._stopword_file)
 
         
         topic_language_model = LanguageModel(term_dict=topic_term_counts)
@@ -44,7 +45,7 @@ class SmarterQueryGenerator(BaseQueryGenerator):
         Given a Topic object, produces a list of query terms that could be issued by the simulated agent.
         """
 
-        topic_text = self._get_topic_text(search_context)
+        topic_text = search_context.topic.get_topic_text()
         if self.topic_lang_model is None:
             self.topic_lang_model = self._generate_topic_language_model(search_context)
 
@@ -98,16 +99,16 @@ class SmarterQueryGenerator(BaseQueryGenerator):
         snippet_text = self.__check_terms(snippet_text)
 
         if snippet_text:
-            topic_text = self._get_topic_text(search_context)
+            topic_text = search_context.topic.get_topic_text()
             all_text = '{0} {1}'.format(topic_text, snippet_text)
 
-            #snippet_term_counts = self._extract_term_dict_from_text(snippet_text)
-            #topic_term_counts = self._extract_term_dict_from_text(topic_text)
+            #snippet_term_counts = lm_methods.extract_term_dict_from_text(snippet_text, self._stopword_file)
+            #topic_term_counts = lm_methods.extract_term_dict_from_text(topic_text, self._stopword_file)
             #title_language_model = LanguageModel(term_dict=topic_term_counts)
             #snippet_language_model = LanguageModel(term_dict=snippet_term_counts)
             #topic_language_model = BayesLanguageModel(title_language_model, snippet_language_model, beta=10)
 
-            term_counts = self._extract_term_dict_from_text(all_text)
+            term_counts = lm_methods.extract_term_dict_from_text(all_text, self._stopword_file)
 
             language_model = LanguageModel(term_dict=term_counts)
 
