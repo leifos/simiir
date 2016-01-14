@@ -26,6 +26,7 @@ Date:   2015-09-09
         <user configurationFile="../example_sims/users/perfect_trec_user.xml" />
         <user configurationFile="../example_sims/users/smart_user.xml" />
         <user configurationFile="../example_sims/users/lm_smart_user_with_updating.xml" />
+		<user configurationFile="../example_sims/users/lm_smart_user_with_topic_updating.xml" />
         <user configurationFile="../example_sims/users/fixed_depth_user.xml" />
         <user configurationFile="../example_sims/users/random_user.xml" />
         <user configurationFile="../example_sims/users/ift_user.xml" />
