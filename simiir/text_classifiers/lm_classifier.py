@@ -31,7 +31,10 @@ class LMTextClassifier(BaseTextClassifier):
 
 
     def _make_topic_text(self, **kwargs):
-
+        """
+        Returns a string representing the TREC topic information.
+        Note that the attribute title_weight influences the weighting of the title.
+        """
         title_text = '{0} '.format(self._topic.title) * self.title_weight
         topic_text = '{0} {1}'.format(title_text,self._topic.content)
         return topic_text
@@ -39,7 +42,7 @@ class LMTextClassifier(BaseTextClassifier):
 
     def make_topic_language_model(self):
         """
-
+        Generates a topic language model.
         """
         topic_text = self._make_topic_text()
         document_term_counts = extract_term_dict_from_text(topic_text, self._stopword_file)
