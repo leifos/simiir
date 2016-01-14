@@ -16,9 +16,9 @@ Date:   2015-09-09
         <!--
         These are the topics that each simulated user will complete
         -->
-        <topic id="367" filename="../example_data/topics/topic.367" qrelsFilename="../example_data/qrels/trec2005.qrels" />
-        <topic id="347" filename="../example_data/topics/topic.347" qrelsFilename="../example_data/qrels/trec2005.qrels" />
-        <topic id="435" filename="../example_data/topics/topic.435" qrelsFilename="../example_data/qrels/trec2005.qrels" />
+	    <topic id="367" filename="../example_data/topics/topic.367" qrelsFilename="../example_data/qrels/trec2005.qrels" />
+	    <topic id="347" filename="../example_data/topics/topic.347" qrelsFilename="../example_data/qrels/trec2005.qrels" backgroundFilename="../example_data/word2vec/ap_cbow/t347-100.csv" />
+	    <topic id="435" filename="../example_data/topics/topic.435" qrelsFilename="../example_data/qrels/trec2005.qrels" backgroundFilename="../example_data/word2vec/ap_cbow/t435-100.csv" />
 	</topics>
 
 	<users>
