@@ -50,7 +50,7 @@ class SimulationComponentGenerator(BaseComponentGenerator):
         """
         config = self._config_dict['topic']
         
-        topic = Topic(config['@id'], qrels_filename=config['@qrelsFilename'])
+        topic = Topic(config['@id'], qrels_filename=config['@qrelsFilename'], background_filename=config['@backgroundFilename'])
         topic.read_topic_from_file(config['@filename'])
         
         return topic

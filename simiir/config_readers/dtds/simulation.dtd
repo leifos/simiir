@@ -31,6 +31,7 @@ Date:   2014-09-13
 <!ATTLIST topic                   id CDATA #REQUIRED>
 <!ATTLIST topic                   filename CDATA #REQUIRED>
 <!ATTLIST topic                   qrelsFilename CDATA #REQUIRED>
+<!ATTLIST topic                   backgroundFilename CDATA #IMPLIED>
 
 <!ELEMENT searchInterface         (attribute*)>
 <!ATTLIST searchInterface         class CDATA #REQUIRED>

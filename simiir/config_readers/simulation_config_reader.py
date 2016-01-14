@@ -107,6 +107,11 @@ class SimulationConfigReader(BaseConfigReader):
             filesystem_exists_check(t['@filename'])
             filesystem_exists_check(t['@qrelsFilename'])
             
+            if '@backgroundFilename' in t:  # A background file was specified.
+                filesystem_exists_check(t['@backgroundFilename'])
+            else:
+                t['@backgroundFilename'] = None  # No background file was specified.
+            
         topics = self._config_dict['topics']['topic']
         
         if type(topics) == list:
