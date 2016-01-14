@@ -103,26 +103,58 @@ class BaseQueryGenerator(object):
             self._query_list = self.generate_query_list(search_context)
 
 
+        issued_query_list = search_context.get_issued_queries()
+
+
         for query in self._query_list:
             candidate_query = query[0]
-            if not self._has_query_been_issued(search_context, candidate_query):
-                return candidate_query  # This query has not been issued before, so say it's the next one to issue!
+            if not self._has_query_been_issued(issued_query_list, candidate_query):
+                if not self._had_similar_query_been_issued(issued_query_list, candidate_query):
+                    return candidate_query  # This query has not been issued before, so say it's the next one to issue!
 
         return None
     
     
-    def _has_query_been_issued(self, search_context, query_candidate):
+    def _has_query_been_issued(self, issued_query_list, query_candidate):
         """
         By examining previously examined queries in the search session, returns a boolean indicating whether
         the query terms provided have been previously examined. True iif they have, False otherwise.
+        :param: issued_query_list is a list of  ifind.search.query objects
+        :param query_candidate: string of query terms
         """
-        issued_query_list = search_context.get_issued_queries()
-        # this is a list of ifind.search.query objects
 
         for query in issued_query_list:
             query_str = query.terms
 
             if query_candidate == query_str:
+                return True
+
+        return False
+
+
+    def _had_similar_query_been_issued(self, issued_query_list, query_candidate):
+        """
+        :param: issued_query_list is a list of  ifind.search.query objects
+        :param query_candidate: string of query terms
+        :return: True, if a similar query has been already issued, else False
+        If all the terms exist in a previous queries, then it is similar.
+
+        """
+
+        candidate_terms = query_candidate.split()
+        n = len(candidate_terms)
+
+
+        for query in issued_query_list:
+            query_str = query.terms
+
+            i = 0
+            for terms in candidate_terms:
+
+                if query_str.find(terms)>=0:
+                    i += 1
+
+            if i == n:
                 return True
 
         return False

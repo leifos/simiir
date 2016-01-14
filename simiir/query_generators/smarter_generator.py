@@ -63,14 +63,12 @@ class SmarterQueryGenerator(BaseQueryGenerator):
         bi_query_list = bi_query_generator.extract_queries_from_text(all_text)
 
         query_list = tri_query_list + bi_query_list
-        #query_list = tri_query_list
-
-
 
 
         query_ranker = QueryRanker(smoothed_language_model=self.topic_lang_model)
         query_ranker.calculate_query_list_probabilities(query_list)
         gen_query_list = query_ranker.get_top_queries(100)
+
 
         return gen_query_list
 
