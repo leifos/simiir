@@ -13,4 +13,4 @@ def clean_html(input_str):
     stripped = parser.unescape(input_str)
     stripped = re.sub('<.*?>', '', stripped)
     
-    return stripped
+    return stripped.lower()
