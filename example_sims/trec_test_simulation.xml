@@ -23,7 +23,6 @@ Date:   2015-09-09
 
 	<users>
         <user configurationFile="../example_sims/users/fixed_depth_smart_user.xml" />
-
 	</users>
 
 	<searchInterface class="WhooshSearchInterface">

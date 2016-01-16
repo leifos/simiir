@@ -4,6 +4,7 @@ from ifind.common.language_model import LanguageModel
 from ifind.common.query_generation import SingleQueryGeneration
 from simiir.text_classifiers.base_classifier import BaseTextClassifier
 from ifind.common.smoothed_language_model import SmoothedLanguageModel
+from simiir.utils.tidy import clean_html
 from simiir.utils.lm_methods import extract_term_dict_from_text
 import logging
 
@@ -115,12 +116,15 @@ class LMTextClassifier(BaseTextClassifier):
         """
         score = 0.0
         count = 0.0
-
-        for term in document.title.split(' '):
+        
+        title_stripped = clean_html(document.title)
+        content_stripped = clean_html(document.content)
+        
+        for term in title_stripped:
             score = score + self.get_term_score(term)
             count = count + 1.0
 
-        for term in document.content.split(' '):
+        for term in content_stripped:
             score = score + self.get_term_score(term)
             count = count + 1.0
 
