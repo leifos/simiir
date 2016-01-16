@@ -50,11 +50,11 @@ class SmarterQueryGenerator(BaseQueryGenerator):
             self.topic_lang_model = self._generate_topic_language_model(search_context)
 
 
-        snip_text = self.__get_snip_text(search_context)
+        snip_text = self._get_snip_text(search_context)
 
         all_text = topic_text + ' ' + snip_text
 
-        all_text = self.__check_terms(all_text)
+        all_text = self._check_terms(all_text)
 
         bi_query_generator = BiTermQueryGeneration(minlen=3, stopwordfile=self._stopword_file)
         tri_query_generator = TriTermQueryGeneration(minlen=3, stopwordfile=self._stopword_file)
@@ -74,7 +74,7 @@ class SmarterQueryGenerator(BaseQueryGenerator):
 
 
 
-    def __check_terms(self, text):
+    def _check_terms(self, text):
         if self.background_language_model is None:
             return text
 
@@ -93,8 +93,8 @@ class SmarterQueryGenerator(BaseQueryGenerator):
         if not self.updating:
             return False
 
-        snippet_text = self.__get_snip_text(search_context)
-        snippet_text = self.__check_terms(snippet_text)
+        snippet_text = self._get_snip_text(search_context)
+        snippet_text = self._check_terms(snippet_text)
 
         if snippet_text:
             topic_text = search_context.topic.get_topic_text()
@@ -120,7 +120,7 @@ class SmarterQueryGenerator(BaseQueryGenerator):
         else:
             return False
 
-    def __get_snip_text(self, search_context):
+    def _get_snip_text(self, search_context):
         document_list = search_context.get_all_examined_snippets()
 
         # iterate through document_list, pull out relevant snippets / text
