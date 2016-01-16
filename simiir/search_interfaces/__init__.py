@@ -84,7 +84,7 @@ class Topic(Document):
         """
         topic_text = self.get_topic_text()
         
-        topic_text = topic_text.translate(string.makestrans('', ''), string.punctuation)  # Remove punctuation from the string.
+        topic_text = topic_text.translate(string.maketrans('', ''), string.punctuation)  # Remove punctuation from the string.
         topic_text = topic_text.lower()  # Take everything to lowercase.
         
         return topic_text
