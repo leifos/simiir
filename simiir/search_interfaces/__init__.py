@@ -1,3 +1,5 @@
+import string
+
 class Document(object):
     """
     Basic representation of a document - including a unique identifier (index ID), a title, document content (body), and an additional identifier (e.g. collection ID).

@@ -1,6 +1,5 @@
 __author__ = 'leif'
 
-import string
 from simiir.query_generators.base_generator import BaseQueryGenerator
 
 class TrecTopicAllTextQueryGenerator(BaseQueryGenerator):
