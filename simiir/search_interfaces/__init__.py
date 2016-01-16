@@ -74,7 +74,19 @@ class Topic(Document):
         Returns a string representing the topic's title and content (description).
         """
         return '{title} {content}'.format(**self.__dict__)
-
+    
+    def get_topic_text_nopunctuation(self):
+        """
+        Returns a string representing the topic's title and content, with each term separated by a space.
+        No punctuation is included, and all terms are lowercase.
+        """
+        topic_text = self.get_topic_text()
+        
+        topic_text = topic_text.translate(string.makestrans('', ''), string.punctuation)  # Remove punctuation from the string.
+        topic_text = topic_text.lower()  # Take everything to lowercase.
+        
+        return topic_text
+        
     def __str__(self):
         """
         Returns a string representation of a given instance of Topic.
