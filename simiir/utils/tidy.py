@@ -13,4 +13,7 @@ def clean_html(input_str):
     stripped = parser.unescape(input_str)
     stripped = re.sub('<.*?>', '', stripped)
     
-    return stripped.lower()
+    stripped = stripped.lower()
+    stripped_list = stripped.split(' ')
+    
+    return stripped_list
