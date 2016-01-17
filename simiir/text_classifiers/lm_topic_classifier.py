@@ -12,11 +12,11 @@ class TopicBasedLMTextClassifier(LMTextClassifier):
     """
     Extends the LM text classifier, but also considers topic background knowledge (if provided).
     """
-    def __init__(self, topic, stopword_file=[], background_file=[]):
-        self.topic_weighting = 2  # Weighting score for topic text
-        self.background_weighting = 1  # Weighting score for background topic text
-        self.document_weighting = 1  # Weighting score for examined snippet text
-
+    def __init__(self, topic, stopword_file=[], background_file=[], topic_weighting=1, background_weighting=1, document_weighting=1):
+        self.topic_weighting = topic_weighting  # Weighting score for topic text
+        self.background_weighting = background_weighting  # Weighting score for background topic text
+        self.document_weighting = document_weighting  # Weighting score for examined snippet text
+        
         super(TopicBasedLMTextClassifier, self).__init__(topic, stopword_file, background_file)
 
 
