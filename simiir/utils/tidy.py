@@ -6,7 +6,7 @@ import HTMLParser
 def clean_html(input_str):
     """
     Given an HTML-formatted string, decodes HTML entitles and removes any HTML tags.
-    This is returned, leaving text. Punctuation is not removed.
+    A list of terms is returned, leaving text. Punctuation is not removed.
     """
     parser = HTMLParser.HTMLParser()
     
