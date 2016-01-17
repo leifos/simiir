@@ -101,6 +101,12 @@ class BaseQueryGenerator(object):
 
         if self._query_list is None:
             self._query_list = self.generate_query_list(search_context)
+        
+        if search_context.query_limit > 0:  # If query_limit is a positive integer, a query limit is enforced. So check the length.
+            number_queries = len(search_context.get_issued_queries())
+            
+            if number_queries == search_context.query_limit:  # If this condition is met, no more queries may be issued.
+                return None
 
 
         issued_query_list = search_context.get_issued_queries()
