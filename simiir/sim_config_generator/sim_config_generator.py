@@ -130,9 +130,21 @@ def generate_topics(dict_repr):
     """
     def generate_topic_markup(entry):
         topic_markup = read_file_to_string('base_files/topic.xml')
-        topic_markup = topic_markup.format(entry['@id'],
-                                           entry['@filename'],
-                                           entry['@qrelsFilename'])
+        
+        if '@backgroundFilename' in entry:
+            topic_markup = read_file_to_string('base_files/topic_withbackground.xml')
+            
+            topic_markup = topic_markup.format(entry['@id'],
+                                               entry['@filename'],
+                                               entry['@qrelsFilename'],
+                                               entry['@backgroundFilename'])
+        else:
+            topic_markup = read_file_to_string('base_files/topic.xml')
+            
+            topic_markup = topic_markup.format(entry['@id'],
+                                               entry['@filename'],
+                                               entry['@qrelsFilename'])
+        
         return topic_markup
         
     topics_list = dict_repr['simulation']['topics']
