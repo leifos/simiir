@@ -31,7 +31,7 @@ class Topic(Document):
     def __init__(self, id, title=None, content=None, doc_id=None, qrels_filename=None, background_filename=None):
         super(Topic, self).__init__(id=id, title=title, content=content, doc_id=doc_id)
         self.qrels_filename = qrels_filename
-        self.background_terms = ''
+        self.background_terms = {}
         
         if background_filename is not None:
             self._read_background(background_filename)
@@ -39,15 +39,17 @@ class Topic(Document):
     def _read_background(self, background_filename):
         """
         Populates the background_terms attribute.
-        Reads in from a file to produce a string of background terms. This is the searcher's background knowledge for a given topic.
-        The background is simply stored here; you can specify in classifiers of query generators whether to consider the background.
-        The input file should be a term on each line. On each line, you should have <term>,<score>.
+        Returns a dictionary of <term, value> pairs.
         """
         f = open(background_filename, 'r')
         
         for line in f:
             line = line.strip().split(',')
-            self.background_terms = '{prev} {new}'.format(prev=self.background_terms, new=line[0])  # Builds the string...
+            
+            term = line[0]
+            score = float(line[1])
+            
+            self.background_terms[term] = score
         
         f.close()
         
