@@ -3,7 +3,7 @@ import abc
 from lxml import etree
 from xml.etree import cElementTree
 from collections import defaultdict
-from config_readers import ConfigReaderError
+from simiir.config_readers import ConfigReaderError
 
 class BaseConfigReader(object):
     """

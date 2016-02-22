@@ -1,7 +1,7 @@
 from itertools import product
-from config_readers import ConfigReaderError
-from config_readers.base_config_reader import BaseConfigReader
-from config_readers import parse_boolean, empty_string_check, filesystem_exists_check, check_attributes
+from simiir.config_readers import ConfigReaderError
+from simiir.config_readers.base_config_reader import BaseConfigReader
+from simiir.config_readers import parse_boolean, empty_string_check, filesystem_exists_check, check_attributes
 
 class SimulationConfigReader(BaseConfigReader):
     """
