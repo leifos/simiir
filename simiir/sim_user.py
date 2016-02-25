@@ -109,7 +109,6 @@ class SimulatedUser(object):
         This works by calling the search context for the subsequent query text, and is then issued to the search interface by the search context on behalf of the user.
         If no further queries are available, the logger is told of this - and the simulation will then stop at the next iteration.
         """
-
         # update the query generator with the latest search context.
         self.__query_generator.update_model(self.__search_context)
 

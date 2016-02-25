@@ -1,6 +1,7 @@
 import abc
 from whoosh.lang.porter import stem
 from simiir.utils import lm_methods
+from ifind.search.query import Query
 from ifind.common.query_ranker import QueryRanker
 from ifind.common.language_model import LanguageModel
 from ifind.common.query_generation import SingleQueryGeneration, BiTermQueryGeneration, TriTermQueryGeneration
@@ -97,8 +98,8 @@ class BaseQueryGenerator(object):
 
     def get_next_query(self, search_context):
         """
+        Returns the next query - if one that hasn't been issued before is present.
         """
-
         if self._query_list is None:
             self._query_list = self.generate_query_list(search_context)
         
@@ -107,11 +108,9 @@ class BaseQueryGenerator(object):
             
             if number_queries == search_context.query_limit:  # If this condition is met, no more queries may be issued.
                 return None
-
-
+        
         issued_query_list = search_context.get_issued_queries()
-
-
+        
         for query in self._query_list:
             candidate_query = query[0]
             if not self._has_query_been_issued(issued_query_list, candidate_query):
@@ -120,7 +119,6 @@ class BaseQueryGenerator(object):
 
         return None
     
-    
     def _has_query_been_issued(self, issued_query_list, query_candidate):
         """
         By examining previously examined queries in the search session, returns a boolean indicating whether
@@ -128,11 +126,13 @@ class BaseQueryGenerator(object):
         :param: issued_query_list is a list of  ifind.search.query objects
         :param query_candidate: string of query terms
         """
-
+        query_candidate_object = Query(query_candidate)  # Strip punctutation, etc - so we compare like-for-like!
+        query_candidate_processed = query_candidate_object.terms
+        
         for query in issued_query_list:
             query_str = query.terms
 
-            if query_candidate == query_str:
+            if query_candidate_processed == query_str:
                 return True
 
         return False
