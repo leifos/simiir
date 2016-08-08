@@ -18,18 +18,18 @@ def main(config_filename):
     config_reader = SimulationConfigReader(config_filename)
 
 
-    
+
     for configuration in config_reader:
         user = SimulatedUser(configuration)
 
         progress = ProgressIndicator(configuration)
-        
+
         configuration.output.display_config()
-        
+
         while not configuration.user.logger.is_finished():
             #progress.update()  # Update the progress indicator in the terminal.
             user.decide_action()
-        
+
         configuration.output.display_report()
         configuration.output.save()
         gc.collect()
@@ -41,7 +41,7 @@ def usage(script_name):
     """
     Prints the usage message to the output stream.
     """
-    print "Usage: {0} [configuration_filename]".format(script_name)
+    print("Usage: {0} [configuration_filename]".format(script_name))
 
 if __name__ == '__main__':
     if len(sys.argv) < 2 or len(sys.argv) > 2:
