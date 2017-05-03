@@ -28,6 +28,7 @@ class LMTextClassifier(BaseTextClassifier):
         self.doc_score = 0.0
         self.updating = False
         self.title_weight = 1
+        self.title_only = False
         self.make_topic_language_model()
 
 
@@ -123,17 +124,18 @@ class LMTextClassifier(BaseTextClassifier):
         for term in title_stripped:
             score = score + self.get_term_score(term)
             count = count + 1.0
-
-        for term in content_stripped:
-            score = score + self.get_term_score(term)
-            count = count + 1.0
-
+        
+        if not self.title_only:
+            for term in content_stripped:
+                score = score + self.get_term_score(term)
+                count = count + 1.0
+        
         self.doc_score = (score/count)
         if self.doc_score > self.threshold:
             return True
-
+        
         return False
-
+    
     def get_term_score(self, term):
         """
         Returns a probability score for the given term when considering both the background and topic language models.

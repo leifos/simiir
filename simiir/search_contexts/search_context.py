@@ -184,8 +184,6 @@ class SearchContext(object):
         if self._last_serp_impression is not None:
             self._serp_impressions.append(self._last_serp_impression)
         
-        print self._serp_impressions
-        
         self._last_serp_impression = None
     
     def _set_snippet_action(self):
