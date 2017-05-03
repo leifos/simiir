@@ -31,6 +31,18 @@ class BaseLogger(object):
             self.__log_unknown_action(action_name)
     
     @abc.abstractmethod
+    def get_last_query_time(self):
+        return 0
+    
+    @abc.abstractmethod
+    def get_last_interaction_time(self):
+        return 0
+    
+    @abc.abstractmethod
+    def get_last_marked_time(self):
+        return 0
+    
+    @abc.abstractmethod
     def get_progress(self):
         """
         Abstract method. Returns a value between 0 and 1 representing the progress of the simulation.

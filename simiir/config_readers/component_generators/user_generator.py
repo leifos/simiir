@@ -38,22 +38,23 @@ class UserComponentGenerator(BaseComponentGenerator):
                                                                      ('topic', self.__simulation_components.topic),
                                                                     ])
         
+        # Generate the logger object for the simulation.
+        self.logger = self._get_object_reference(config_details=self._config_dict['logger'],
+                                                         package='loggers',
+                                                         components=[('output_controller', self.__simulation_components.output),
+                                                                     ('search_context', self.search_context)])
+        
         # Create the decision maker (judging relevancy).
         self.decision_maker = self._get_object_reference(config_details=self._config_dict['stoppingDecisionMaker'],
                                                          package='stopping_decision_makers',
-                                                         components=[('search_context', self.search_context)])
+                                                         components=[('search_context', self.search_context),
+                                                                     ('logger', self.logger)])
         
         # Create the SERP impression component (used for some more advanced stopping models).
         self.serp_impression = self._get_object_reference(config_details=self._config_dict['serpImpression'],
                                                           package='serp_impressions',
                                                           components=[('search_context', self.search_context),
                                                                       ('topic', self.__simulation_components.topic)])
-        
-        # Generate the logger object for the simulation.
-        self.logger = self._get_object_reference(config_details=self._config_dict['logger'],
-                                                         package='loggers',
-                                                         components=[('output_controller', self.__simulation_components.output),
-                                                                     ('search_context', self.search_context)])
     
     def prettify(self):
         """

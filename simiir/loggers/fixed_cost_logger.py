@@ -32,6 +32,18 @@ class FixedCostLogger(BaseLogger):
         
         self._total_time = 0  # An elapsed counter of the number of seconds a user has been interacting for.
         self._time_limit = time_limit  # The maximum time that a user can search for in a session.
+        
+        self._last_query_time = 0  # The last time a query was issued, from the start of the session, measured in seconds.
+        self._last_marked_time = 0  # The last time a document was marked, from the start of the session, measured in seconds.
+    
+    def get_last_query_time(self):
+        return self._last_query_time
+    
+    def get_last_interaction_time(self):
+        return self._total_time
+    
+    def get_last_marked_time(self):
+        return self._last_marked_time
     
     def get_progress(self):
         """
@@ -70,6 +82,9 @@ class FixedCostLogger(BaseLogger):
         Increments the __total_time counter with the cost of issuing a query.
         """
         self._total_time = self._total_time + self._query_cost
+        self._last_query_time = self._total_time
+        self._last_marked_time = self._total_time  # Reset the marked time to zero at the start of the query
+        
         self._report(Actions.QUERY, **kwargs)
     
     def _log_serp(self, **kwargs):
@@ -100,4 +115,6 @@ class FixedCostLogger(BaseLogger):
         Concrete implementation for marking a document as relevant as a fixed cost.
         """
         self._total_time = self._total_time + self._mark_document_cost
+        self._last_marked_time = self._total_time
+        
         self._report(Actions.MARK, **kwargs)

@@ -8,8 +8,8 @@ class DifferenceDecisionMaker(BaseDecisionMaker):
     A concrete implementation of a decision maker.
     Using KL-Divergence to determine how "different" snippets/documents are to one another, makes a decision what to do next.
     """
-    def __init__(self, search_context, stopword_file, threshold, decision_maker=1, nonrel_only=False, query_based=True, vocab_file=None, alpha=0.5):
-        super(DifferenceDecisionMaker, self).__init__(search_context)
+    def __init__(self, search_context, logger, stopword_file, threshold, decision_maker=1, nonrel_only=False, query_based=True, vocab_file=None, alpha=0.5):
+        super(DifferenceDecisionMaker, self).__init__(search_context, logger)
         
         self.__stopwords = self.__get_stopwords_list(stopword_file)
         self.__threshold = threshold

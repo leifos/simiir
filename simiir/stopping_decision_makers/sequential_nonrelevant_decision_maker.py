@@ -6,8 +6,8 @@ class SequentialNonrelDecisionMaker(BaseDecisionMaker):
     A concrete implementation of a decision maker.
     Returns True iif the depth at which a user is in a SERP is less than a predetermined value.
     """
-    def __init__(self, search_context, nonrelevant_threshold=3):
-        super(SequentialNonrelDecisionMaker, self).__init__(search_context)
+    def __init__(self, search_context, logger, nonrelevant_threshold=3):
+        super(SequentialNonrelDecisionMaker, self).__init__(search_context, logger)
         self.__nonrelevant_threshold = nonrelevant_threshold  # The threshold; get to this point, we stop in the current SERP.
 
     def decide(self):

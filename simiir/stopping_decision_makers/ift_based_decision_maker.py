@@ -14,8 +14,8 @@ class IftBasedDecisionMaker(BaseDecisionMaker):
     else it returns Actions.SNIPPET
     """
 
-    def __init__(self, search_context, gain_threshold=0.015, query_time=15.0, doc_time=20.0,discount=0.5, rank_threshold=1):
-        super(IftBasedDecisionMaker, self).__init__(search_context)
+    def __init__(self, search_context, logger, gain_threshold=0.015, query_time=15.0, doc_time=20.0,discount=0.5, rank_threshold=1):
+        super(IftBasedDecisionMaker, self).__init__(search_context, logger)
         self.__rank_threshold = rank_threshold  # Before basing the decision on the gain recieved, examine this many documents first
         self.__gain_threshold = gain_threshold  # average gain per second
         # The after rate of gain, if the current rate of gain does not exceed this... STOP

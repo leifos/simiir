@@ -137,8 +137,6 @@ class SimulatedUser(object):
             self.__logger.log_action(Actions.SERP, status="EMPTY_SERP")
             return False  # No results present; return False (we don't continue with this SERP)
         
-        self.__logger.log_action(Actions.SERP, status="EXAMINE_SERP")
-        
         # Code updated on 2017-05-02 to consider an initial SERP impression.
         self.__serp_impression.initialise()
         serp_impression = self.__serp_impression.get_impression()  # Is the SERP attractive enough to look at?
@@ -151,9 +149,9 @@ class SimulatedUser(object):
         self.__search_context.add_serp_impression(serp_impression)
         
         if is_serp_attractive:
-           self.__logger.log_action(Actions.SERP, status="SERP_ATTRACTIVE")
+           self.__logger.log_action(Actions.SERP, status="EXAMINE_SERP")
         else:
-           self.__logger.log_action(Actions.SERP, status="SERP_IGNORED")
+           self.__logger.log_action(Actions.SERP, status="IGNORE_SERP")
         
         return is_serp_attractive
     
@@ -169,7 +167,7 @@ class SimulatedUser(object):
         if self.__search_context.get_document_observation_count(snippet) > 0:
             # This document has been previously seen; so we ignore it. But the higher the count, cumulated credibility could force us to examine it?
             self.__logger.log_action(Actions.SNIPPET, status="SEEN_PREVIOUSLY", doc_id=snippet.doc_id)
-
+        
         else:
             # This snippet has not been previously seen; check quality of snippet. Does it show some form of relevance?
             # If so, we return True - and if not, we return False, which moves the simulator to the next step.
@@ -182,7 +180,7 @@ class SimulatedUser(object):
             else:
                 snippet.judgment = 0
                 self.__logger.log_action(Actions.SNIPPET, status="SNIPPET_NOT_RELEVANT", doc_id=snippet.doc_id)
-
+        
             self.__snippet_classifier.update_model(self.__search_context)
         return judgment
     
