@@ -2,7 +2,7 @@
 User Configuration DTD
 
 Author: David Maxwell
-Date:   2014-09-13
+Date:   2017-05-02
 -->
 
 <!ELEMENT attribute          (#PCDATA)>
@@ -11,7 +11,7 @@ Date:   2014-09-13
 <!ATTLIST attribute          value CDATA #REQUIRED>
 <!ATTLIST attribute          is_argument CDATA #REQUIRED>
 
-<!ELEMENT userConfiguration  (queryGenerator, textClassifiers, stoppingDecisionMaker, logger, searchContext)>
+<!ELEMENT userConfiguration  (queryGenerator, textClassifiers, stoppingDecisionMaker, logger, searchContext, serpImpression)>
 <!ATTLIST userConfiguration  id CDATA #REQUIRED>
 
 <!ELEMENT queryGenerator     (attribute*)>
@@ -33,3 +33,6 @@ Date:   2014-09-13
 
 <!ELEMENT searchContext      (attribute*)>
 <!ATTLIST searchContext      class CDATA #REQUIRED>
+
+<!ELEMENT serpImpression     (attribute*)>
+<!ATTLIST serpImpression     class CDATA #REQUIRED>

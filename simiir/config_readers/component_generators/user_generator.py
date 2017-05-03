@@ -38,10 +38,16 @@ class UserComponentGenerator(BaseComponentGenerator):
                                                                      ('topic', self.__simulation_components.topic),
                                                                     ])
         
-        # Finally, create the decision maker.
+        # Create the decision maker (judging relevancy).
         self.decision_maker = self._get_object_reference(config_details=self._config_dict['stoppingDecisionMaker'],
                                                          package='stopping_decision_makers',
                                                          components=[('search_context', self.search_context)])
+        
+        # Create the SERP impression component (used for some more advanced stopping models).
+        self.serp_impression = self._get_object_reference(config_details=self._config_dict['serpImpression'],
+                                                          package='serp_impressions',
+                                                          components=[('search_context', self.search_context),
+                                                                      ('topic', self.__simulation_components.topic)])
         
         # Generate the logger object for the simulation.
         self.logger = self._get_object_reference(config_details=self._config_dict['logger'],
@@ -57,6 +63,7 @@ class UserComponentGenerator(BaseComponentGenerator):
         return_string = "{0}{1}{2}".format(return_string, "{0}Snippet Classifier: {1}{2}{3}".format(" "*self.__simulation_components.output.output_indentation*2, self._config_dict['textClassifiers']['snippetClassifier']['@class'], os.linesep, self._prettify_attributes(self._config_dict['textClassifiers']['snippetClassifier'], self.__simulation_components.output.output_indentation)), os.linesep)
         return_string = "{0}{1}{2}".format(return_string, "{0}Document Classifier: {1}{2}{3}".format(" "*self.__simulation_components.output.output_indentation*2, self._config_dict['textClassifiers']['documentClassifier']['@class'], os.linesep, self._prettify_attributes(self._config_dict['textClassifiers']['documentClassifier'], self.__simulation_components.output.output_indentation)), os.linesep)
         return_string = "{0}{1}{2}".format(return_string, "{0}Stopping Decision Maker: {1}{2}{3}".format(" "*self.__simulation_components.output.output_indentation*2, self._config_dict['stoppingDecisionMaker']['@class'], os.linesep, self._prettify_attributes(self._config_dict['stoppingDecisionMaker'], self.__simulation_components.output.output_indentation)), os.linesep)
+        return_string = "{0}{1}{2}".format(return_string, "{0}SERP Impression: {1}{2}{3}".format(" "*self.__simulation_components.output.output_indentation*2, self._config_dict['serpImpression']['@class'], os.linesep, self._prettify_attributes(self._config_dict['serpImpression'], self.__simulation_components.output.output_indentation)), os.linesep)
         return_string = "{0}{1}{2}".format(return_string, "{0}Logger: {1}{2}{3}".format(" "*self.__simulation_components.output.output_indentation*2, self._config_dict['logger']['@class'], os.linesep, self._prettify_attributes(self._config_dict['logger'], self.__simulation_components.output.output_indentation)), os.linesep)
         return_string = "{0}{1}{2}".format(return_string, "{0}Search Context: {1}{2}{3}".format(" "*self.__simulation_components.output.output_indentation*2, self._config_dict['searchContext']['@class'], os.linesep, self._prettify_attributes(self._config_dict['searchContext'], self.__simulation_components.output.output_indentation)), os.linesep)
         

@@ -64,7 +64,9 @@ class SearchContext(object):
         
         self._last_query = None                  # The Query object that was issued.
         self._last_results = None                # Results for the query.
-        self._issued_queries = []                 # A list of queries issued in chronological order.
+        self._last_serp_impression = None        # Results for the last SERP impression upon the searcher
+        self._issued_queries = []                # A list of queries issued in chronological order.
+        self._serp_impressions = []              # A list of SERP impressions in chronological order. The length == issued_queries above.
         
         self._current_serp_position = 0          # The position in the current SERP we are currently looking at (zero-based!)
                                                  # This counter is used for the current snippet and document.
@@ -179,7 +181,12 @@ class SearchContext(object):
         Method called when a SERP is initially examined.
         Any modifications to the search context can be undertaken here.
         """
-        pass
+        if self._last_serp_impression is not None:
+            self._serp_impressions.append(self._last_serp_impression)
+        
+        print self._serp_impressions
+        
+        self._last_serp_impression = None
     
     def _set_snippet_action(self):
         """
@@ -216,7 +223,6 @@ class SearchContext(object):
         """
         pass
     
-
     def add_issued_query(self, query_text, page=1, page_len=1000):
         """
         Adds a query to the stack of previously issued queries.
@@ -240,6 +246,12 @@ class SearchContext(object):
         self._issued_queries.append(query_object)
         self._last_query = query_object
         self._last_results = self._last_query.response.results
+    
+    def add_serp_impression(self, serp_impression):
+        """
+        Updates the SERP impression attribute.
+        """
+        self._last_serp_impression = serp_impression
     
     def get_last_query(self):
         """
@@ -326,6 +338,16 @@ class SearchContext(object):
             return len(self._last_results)
         
         return 0
+    
+    def get_current_results(self):
+        """
+        If it exists, returns the set of results for the current SERP.
+        If no query has been issued, or no results are present, None is returned.
+        """
+        if self._last_results:
+            return self._last_results
+        
+        return None
     
     def get_topic(self):
         """

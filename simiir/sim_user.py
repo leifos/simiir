@@ -13,6 +13,7 @@ class SimulatedUser(object):
         self.__document_classifier = configuration.user.document_classifier
         self.__snippet_classifier = configuration.user.snippet_classifier
         self.__query_generator = configuration.user.query_generator
+        self.__serp_impression = configuration.user.serp_impression
         
         self.__action_value = None  # Response from the previous action method - True or False? (did the user do or not do what they thought?)
     
@@ -137,7 +138,24 @@ class SimulatedUser(object):
             return False  # No results present; return False (we don't continue with this SERP)
         
         self.__logger.log_action(Actions.SERP, status="EXAMINE_SERP")
-        return True
+        
+        # Code updated on 2017-05-02 to consider an initial SERP impression.
+        self.__serp_impression.initialise()
+        serp_impression = self.__serp_impression.get_impression()  # Is the SERP attractive enough to look at?
+                                                                   # First value denotes this (boolean), second contains the patch type.
+        
+        is_serp_attractive = serp_impression.impression_judgement
+        serp_patch_type = serp_impression.patch_type
+        
+        # Add the SERP impression results to the search context.
+        self.__search_context.add_serp_impression(serp_impression)
+        
+        if is_serp_attractive:
+           self.__logger.log_action(Actions.SERP, status="SERP_ATTRACTIVE")
+        else:
+           self.__logger.log_action(Actions.SERP, status="SERP_IGNORED")
+        
+        return is_serp_attractive
     
     def __do_snippet(self):
         """
@@ -157,7 +175,6 @@ class SimulatedUser(object):
             # If so, we return True - and if not, we return False, which moves the simulator to the next step.
             
             #print 'snippet', snippet.doc_id, self.__snippet_classifier.is_relevant(snippet)
-            
             if self.__snippet_classifier.is_relevant(snippet):
                 snippet.judgment = 1
                 self.__logger.log_action(Actions.SNIPPET, status="SNIPPET_RELEVANT", doc_id=snippet.doc_id)
@@ -168,8 +185,7 @@ class SimulatedUser(object):
 
             self.__snippet_classifier.update_model(self.__search_context)
         return judgment
-
-
+    
     def __do_assess_document(self):
         """
         Called when a document is to be assessed.

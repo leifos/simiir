@@ -46,3 +46,7 @@ class UserConfigReader(BaseConfigReader):
         # Search Context
         empty_string_check(self._config_dict['searchContext']['@class'])
         check_attributes(self._config_dict['searchContext'])
+        
+        # SERP Impression
+        empty_string_check(self._config_dict['serpImpression']['@class'])
+        check_attributes(self._config_dict['serpImpression'])

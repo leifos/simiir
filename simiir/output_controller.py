@@ -2,7 +2,7 @@ import os
 
 class OutputController(object):
     """
-    
+    A class controlling the output of the simulation.
     """
     def __init__(self, simulation_configuration, output_configuration):
         self.__simulation_configuration = simulation_configuration

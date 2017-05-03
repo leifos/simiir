@@ -15,17 +15,20 @@ class WhooshSearchInterface(BaseSearchInterface):
     Set model = 0 for TFIDIF
     Set model = 1 for BM25 (defaults to b=0.75), set pval to change b.
     Set model = 2 for PL2 (defaults to c=10.), set pval to change c.
-
     """
-    def __init__(self, whoosh_index_dir, model=2, implicit_or=True, pval=None):
+    def __init__(self, whoosh_index_dir, model=2, implicit_or=True, pval=None, frag_type=2, frag_size=2, frag_surround=40):
         super(WhooshSearchInterface, self).__init__()
         log.debug("Whoosh Index to open: {0}".format(whoosh_index_dir))
         self.__index = open_dir(whoosh_index_dir)
         self.__reader = self.__index.reader()
-
-
-        self.__engine = Whooshtrec(whoosh_index_dir=whoosh_index_dir,model=model,implicit_or=implicit_or)
-
+        
+        self.__engine = Whooshtrec(whoosh_index_dir=whoosh_index_dir, model=model, implicit_or=implicit_or)
+        
+        # Update (2017-05-02) for snippet fragment tweaking.
+        # SIGIR Study (2017) uses frag_type==2, surround==40, snippet_sizes==2,0,1,4
+        self.__engine.snippet_size = frag_size
+        self.__engine.set_fragmenter(frag_type=frag_type, surround=frag_surround)
+        
         if pval:
             self.__engine.set_model(model, pval)
     
@@ -38,7 +41,6 @@ class WhooshSearchInterface(BaseSearchInterface):
         
         self._last_query = query
         self._last_response = response
-        
         return response
     
     def get_document(self, document_id):
