@@ -173,6 +173,7 @@ class SimulatedUser(object):
             # If so, we return True - and if not, we return False, which moves the simulator to the next step.
             
             #print 'snippet', snippet.doc_id, self.__snippet_classifier.is_relevant(snippet)
+            
             if self.__snippet_classifier.is_relevant(snippet):
                 snippet.judgment = 1
                 self.__logger.log_action(Actions.SNIPPET, status="SNIPPET_RELEVANT", snippet=snippet)
