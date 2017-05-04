@@ -16,8 +16,6 @@ class TimeSinceRelevancyDecisionMaker(BaseDecisionMaker):
         """
         super(TimeSinceRelevancyDecisionMaker, self).__init__(search_context, logger)
         self.__timeout_threshold = timeout_threshold  # This is our threshold; if we reach this value or go above it, we stop.
-        self.__last_relevant_time = 0
-        self.__last_reported_interaction_time = 0
         self.__on_mark = on_mark
         
     def decide(self):
@@ -26,13 +24,12 @@ class TimeSinceRelevancyDecisionMaker(BaseDecisionMaker):
         the searcher will abandon the SERP and issue another query, or stop altogether.
         """
         if self.__on_mark:
-            self.__last_relevant_time = self._logger.get_last_marked_time()
+            last_relevant_time = self._logger.get_last_marked_time()
         else:
-            self.__last_relevant_time = self._logger.get_last_relevant_snippet_time()
+            last_relevant_time = self._logger.get_last_relevant_snippet_time()
         
-        self.__last_interaction_time = self._logger.get_last_interaction_time()
-        
-        difference = self.__last_interaction_time - self.__last_relevant_time
+        last_interaction_time = self._logger.get_last_interaction_time()
+        difference = last_interaction_time - last_relevant_time
         
         if difference >= self.__timeout_threshold:
             return Actions.QUERY  # The user has spent enough time on this SERP according to the rule; so bail out.

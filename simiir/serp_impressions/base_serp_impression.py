@@ -36,7 +36,7 @@ class BaseSERPImpression(object):
             return float(trapz(cumulative_perfect_judgements, dx=snippet_judgements_length))
         
         if snippet_judgements is None or len(snippet_judgements) == 1:
-            return PatchTypes.NOT_DEFINED
+            return PatchTypes.UNDEFINED
         
         no_snippets = len(snippet_judgements)
         cumulative = numpy.cumsum(snippet_judgements)

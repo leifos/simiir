@@ -251,6 +251,12 @@ class SearchContext(object):
         """
         self._last_serp_impression = serp_impression
     
+    def get_last_serp_impression(self):
+        """
+        Returns the last SERP impression judgement. If no previous query has been issued, None is returned.
+        """
+        return self._last_serp_impression
+    
     def get_last_query(self):
         """
         Returns the previous query issued. If no previous query has been issued, None is returned.
