@@ -35,6 +35,7 @@ class FixedCostLogger(BaseLogger):
         
         self._last_query_time = 0  # The last time a query was issued, from the start of the session, measured in seconds.
         self._last_marked_time = 0  # The last time a document was marked, from the start of the session, measured in seconds.
+        self._last_relevant_snippet_time = 0  # The last time a snippet was considered relevant, from the start of the session (seconds).
     
     def get_last_query_time(self):
         return self._last_query_time
@@ -44,6 +45,9 @@ class FixedCostLogger(BaseLogger):
     
     def get_last_marked_time(self):
         return self._last_marked_time
+    
+    def get_last_relevant_snippet_time(self):
+        return self._last_relevant_snippet_time
     
     def get_progress(self):
         """
@@ -101,7 +105,10 @@ class FixedCostLogger(BaseLogger):
         Increments __total_time to reflect the cost of examining a snippet.
         """
         self._total_time = self._total_time + self._snippet_cost
-        self._report(Actions.SNIPPET, **kwargs)
+        self._report(Actions.SNIPPET, doc_id=kwargs['snippet'].doc_id)
+        
+        if kwargs['snippet'].judgment > 0:
+            self._last_relevant_snippet_time = self._total_time
     
     def _log_assess(self, **kwargs):
         """

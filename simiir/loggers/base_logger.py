@@ -43,6 +43,10 @@ class BaseLogger(object):
         return 0
     
     @abc.abstractmethod
+    def get_last_relevant_snippet_time(self):
+        return 0
+    
+    @abc.abstractmethod
     def get_progress(self):
         """
         Abstract method. Returns a value between 0 and 1 representing the progress of the simulation.

@@ -166,7 +166,7 @@ class SimulatedUser(object):
         
         if self.__search_context.get_document_observation_count(snippet) > 0:
             # This document has been previously seen; so we ignore it. But the higher the count, cumulated credibility could force us to examine it?
-            self.__logger.log_action(Actions.SNIPPET, status="SEEN_PREVIOUSLY", doc_id=snippet.doc_id)
+            self.__logger.log_action(Actions.SNIPPET, status="SEEN_PREVIOUSLY", snippet=snippet)
         
         else:
             # This snippet has not been previously seen; check quality of snippet. Does it show some form of relevance?
@@ -175,11 +175,11 @@ class SimulatedUser(object):
             #print 'snippet', snippet.doc_id, self.__snippet_classifier.is_relevant(snippet)
             if self.__snippet_classifier.is_relevant(snippet):
                 snippet.judgment = 1
-                self.__logger.log_action(Actions.SNIPPET, status="SNIPPET_RELEVANT", doc_id=snippet.doc_id)
+                self.__logger.log_action(Actions.SNIPPET, status="SNIPPET_RELEVANT", snippet=snippet)
                 judgment = True
             else:
                 snippet.judgment = 0
-                self.__logger.log_action(Actions.SNIPPET, status="SNIPPET_NOT_RELEVANT", doc_id=snippet.doc_id)
+                self.__logger.log_action(Actions.SNIPPET, status="SNIPPET_NOT_RELEVANT", snippet=snippet)
         
             self.__snippet_classifier.update_model(self.__search_context)
         return judgment
