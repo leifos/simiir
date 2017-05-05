@@ -98,6 +98,5 @@ class LMSERPImpression(BaseSERPImpression):
         
         if avg_dis_cum_gain >= self.avg_dcg_threshold:
             judgement = True  # We want to examine the SERP in more detail
-            print "SERP IS GOOD (from impression)"
         
         return SERPImpression(judgement, patch_type)
