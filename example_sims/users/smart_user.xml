@@ -36,5 +36,8 @@
 	<searchContext class="SearchContext">
 		<attribute name="relevance_revision" type="integer" value="1" is_argument="false" />
 	</searchContext>
+	
+	<serpImpression class="SimpleSERPImpression">
+	</serpImpression>
 
 </userConfiguration>
