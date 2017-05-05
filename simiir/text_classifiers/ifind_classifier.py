@@ -13,11 +13,11 @@ class IFindTextClassifier(BaseTextClassifier):
     """
     
     """
-    def __init__(self, topic, stopword_file=[], background_file=[]):
+    def __init__(self, topic, search_context, stopword_file=[], background_file=[]):
         """
         
         """
-        super(IFindTextClassifier, self).__init__(topic, stopword_file, background_file)
+        super(IFindTextClassifier, self).__init__(topic, search_context, stopword_file, background_file)
         self.threshold = 0.0
         self.mu = 100.0
         self.make_topic_language_model()

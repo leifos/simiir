@@ -12,11 +12,11 @@ class InformedTrecTextClassifier(BaseInformedTrecTextClassifier):
     A concrete implementation of BaseInformedTrecTextClassifier.
     No dice rolling here. What ever is in the judgement file is used.
     """
-    def __init__(self, topic, qrel_file):
+    def __init__(self, topic, search_context, qrel_file):
         """
         Initialise an instance of the InformedTrecTextClassifier.
         """
-        super(InformedTrecTextClassifier, self).__init__(topic, qrel_file)
+        super(InformedTrecTextClassifier, self).__init__(topic, search_context, qrel_file)
         log.debug("Classifier uses TREC qrels to make decision:")
         
         

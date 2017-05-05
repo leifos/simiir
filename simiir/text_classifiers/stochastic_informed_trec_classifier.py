@@ -15,11 +15,11 @@ class StochasticInformedTrecTextClassifier(BaseInformedTrecTextClassifier):
     rprob and nprob are set to 1.0 by default, so that the classifier is deterministic,
     i.e. it returns the exact TREC relevance judgement
     """
-    def __init__(self, topic, qrel_file, rprob=1.0, nprob=1.0):
+    def __init__(self, topic, search_context, qrel_file, rprob=1.0, nprob=1.0):
         """
 
         """
-        super(StochasticInformedTrecTextClassifier, self).__init__(topic, qrel_file)
+        super(StochasticInformedTrecTextClassifier, self).__init__(topic, search_context, qrel_file)
 
         self._rel_prob = rprob
         self._nrel_prob = nprob

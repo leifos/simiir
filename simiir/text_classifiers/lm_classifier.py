@@ -15,11 +15,11 @@ class LMTextClassifier(BaseTextClassifier):
     """
 
     """
-    def __init__(self, topic, stopword_file=[], background_file=[]):
+    def __init__(self, topic, search_context, stopword_file=[], background_file=[]):
         """
 
         """
-        super(LMTextClassifier, self).__init__(topic, stopword_file, background_file)
+        super(LMTextClassifier, self).__init__(topic, search_context, stopword_file, background_file)
         self.alpha = 1.0
         self.lam = 0.1
         self.mu = 100.0

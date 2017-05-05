@@ -10,11 +10,11 @@ class TrecTextClassifier(BaseTextClassifier):
     """
 
     """
-    def __init__(self, topic, stopword_file=[], background_file=[]):
+    def __init__(self, topic, search_context, stopword_file=[], background_file=[]):
         """
 
         """
-        super(TrecTextClassifier, self).__init__(topic, stopword_file, background_file)
+        super(TrecTextClassifier, self).__init__(topic, search_context, stopword_file, background_file)
 
     def make_topic_language_model(self):
         """

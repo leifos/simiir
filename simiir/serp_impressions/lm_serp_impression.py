@@ -38,6 +38,7 @@ class LMSERPImpression(BaseSERPImpression):
         if self.__classifier is None:
             # Instantiate the classifier using the settings provided as attributes to the SERP impression class.
             self.__classifier = TopicBasedLMTextClassifier(self._topic,
+                                                           self._search_context,
                                                            self.classifier_stopword_file,
                                                            self.classifier_background_file,
                                                            self.classifier_topic_weighting,
@@ -97,5 +98,6 @@ class LMSERPImpression(BaseSERPImpression):
         
         if avg_dis_cum_gain >= self.avg_dcg_threshold:
             judgement = True  # We want to examine the SERP in more detail
+            print "SERP IS GOOD (from impression)"
         
         return SERPImpression(judgement, patch_type)

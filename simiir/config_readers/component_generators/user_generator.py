@@ -19,16 +19,6 @@ class UserComponentGenerator(BaseComponentGenerator):
                                                           package='query_generators',
                                                           components=[])
         
-        # Create the user's snippet classifier.
-        self.snippet_classifier = self._get_object_reference(config_details=self._config_dict['textClassifiers']['snippetClassifier'],
-                                                             package='text_classifiers',
-                                                             components=[('topic', self.__simulation_components.topic)])
-        
-        # Create the uer's document classifier.
-        self.document_classifier = self._get_object_reference(config_details=self._config_dict['textClassifiers']['documentClassifier'],
-                                                              package='text_classifiers',
-                                                              components=[('topic', self.__simulation_components.topic)])
-        
         # Create the search context object.
         # self.search_context = self.__generate_search_context()  # When we had only a single search context class.
         self.search_context = self._get_object_reference(config_details=self._config_dict['searchContext'],
@@ -37,6 +27,18 @@ class UserComponentGenerator(BaseComponentGenerator):
                                                                      ('output_controller', self.__simulation_components.output),
                                                                      ('topic', self.__simulation_components.topic),
                                                                     ])
+        
+        # Create the user's snippet classifier.
+        self.snippet_classifier = self._get_object_reference(config_details=self._config_dict['textClassifiers']['snippetClassifier'],
+                                                             package='text_classifiers',
+                                                             components=[('topic', self.__simulation_components.topic),
+                                                                         ('search_context', self.search_context)])
+        
+        # Create the uer's document classifier.
+        self.document_classifier = self._get_object_reference(config_details=self._config_dict['textClassifiers']['documentClassifier'],
+                                                              package='text_classifiers',
+                                                              components=[('topic', self.__simulation_components.topic),
+                                                                          ('search_context', self.search_context)])
         
         # Generate the logger object for the simulation.
         self.logger = self._get_object_reference(config_details=self._config_dict['logger'],

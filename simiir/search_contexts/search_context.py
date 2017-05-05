@@ -71,8 +71,8 @@ class SearchContext(object):
         self._current_serp_position = 0          # The position in the current SERP we are currently looking at (zero-based!)
                                                  # This counter is used for the current snippet and document.
         
-        self._snippets_examined = []             # Snippets that have been previously examined.
-        self._documents_examined = []            # Documents that have been previously examined.
+        self._snippets_examined = []             # Snippets that have been previously examined for the current query.
+        self._documents_examined = []            # Documents that have been previously examined for the current query.
         
         self._previously_examined_snippets = []  # A list of all snippets that have been seen more than once across the search session.
         self._all_snippets_examined = []         # A list of all snippets examined throughout the search session.
