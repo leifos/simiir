@@ -9,14 +9,13 @@ class LMSERPImpression(BaseSERPImpression):
     A language modelling based approach to judging how good a SERP appears to be.
     Typically, you'll want to make this quite liberal to increase the likelihood of a searcher deciding to enter the SERP, judging snippets.
     """
-    def __init__(self, search_context, topic, viewport_size, patch_type_threshold):
-        super(LMSERPImpression, self).__init__(search_context, topic, patch_type_threshold)
+    def __init__(self, search_context, topic, viewport_size, dcg_discount, patch_type_threshold):
+        super(LMSERPImpression, self).__init__(search_context, topic, dcg_discount, patch_type_threshold)
         self.__classifier = None
         
         # All of the following attributes can be changed from the configuration file (defaults provided below).
         self.viewport_size = viewport_size  # How many snippets can be seen in the user's viewport?
         self.query_time = 5  # Time spent querying
-        self.dcg_discount = 0.5  # DCG discount for calculations
         self.avg_dcg_threshold = 0.0  # Threshold for average rate of DCG
         
         # The following attributes are used to initialise the TopicBasedLMTextClassifier classifier.
@@ -88,7 +87,7 @@ class LMSERPImpression(BaseSERPImpression):
                 j = 0
             
             judgements.append(j)
-            dis_cum_gain += (j)*(1.0/(pos**self.dcg_discount))
+            dis_cum_gain += (j)*(1.0/(pos**self._dcg_discount))
             
         total_time = float(self.query_time)
         avg_dis_cum_gain = dis_cum_gain / total_time
