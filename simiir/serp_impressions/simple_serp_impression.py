@@ -19,4 +19,4 @@ class SimpleSERPImpression(BaseSERPImpression):
         """
         Simplistic approach; always assume that the SERP has some degree of relevancy, thus the searcher enters the SERP to judge snippets.
         """
-        return SERPImpression(True, PatchTypes.NOT_DEFINED)
+        return SERPImpression(True, PatchTypes.UNDEFINED)
