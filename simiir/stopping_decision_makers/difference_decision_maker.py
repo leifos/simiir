@@ -39,6 +39,8 @@ class DifferenceDecisionMaker(BaseDecisionMaker):
             existing = self._search_context.get_examined_snippets()
         else:
             existing = self._search_context.get_all_examined_snippets()
+        
+        print len(existing)
 
         if self.__nonrel_only:  # Filter to only nonrelevant documents using a list comprehension.
             existing = [snippet for snippet in existing if snippet.judgment < 1]
@@ -67,7 +69,7 @@ class DifferenceDecisionMaker(BaseDecisionMaker):
         seen_text = "{0} {1} {2}".format(seen_text, topic.content, self.__clean_markup(snippet.content))
 
         score = self.__decision_maker.difference(new_text,seen_text)
-        print "diff", score
+        #print "diff", score
         #print "SEEN:", seen_text
         #print "NEW:", new_text
         #print
