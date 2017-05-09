@@ -68,8 +68,7 @@ class SmarterQueryGenerator(BaseQueryGenerator):
         query_ranker = QueryRanker(smoothed_language_model=self.topic_lang_model)
         query_ranker.calculate_query_list_probabilities(query_list)
         gen_query_list = query_ranker.get_top_queries(100)
-
-
+        
         return gen_query_list
 
 
@@ -89,7 +88,6 @@ class SmarterQueryGenerator(BaseQueryGenerator):
 
 
     def update_model(self, search_context):
-
         if not self.updating:
             return False
 
@@ -105,37 +103,32 @@ class SmarterQueryGenerator(BaseQueryGenerator):
             #title_language_model = LanguageModel(term_dict=topic_term_counts)
             #snippet_language_model = LanguageModel(term_dict=snippet_term_counts)
             #topic_language_model = BayesLanguageModel(title_language_model, snippet_language_model, beta=10)
-
+            
             term_counts = lm_methods.extract_term_dict_from_text(all_text, self._stopword_file)
-
             language_model = LanguageModel(term_dict=term_counts)
-
+            
             self.topic_lang_model = language_model
             if self.background_language_model:
                 smoothed_topic_language_model = SmoothedLanguageModel(language_model,self.background_language_model)
                 self.topic_lang_model = smoothed_topic_language_model
-
-
+            
             return True
         else:
             return False
-
+    
     def _get_snip_text(self, search_context):
         document_list = search_context.get_all_examined_snippets()
-
+        
         # iterate through document_list, pull out relevant snippets / text
         rel_text_list = []
         snippet_text = ''
         for doc in document_list:
             if doc.judgment > 0:
                 rel_text_list.append('{0} {1}'.format(doc.title, doc.content))
-
+        
         if rel_text_list:
             snippet_text = ' '.join(rel_text_list)
-
-
+        
         snippet_soup = BeautifulSoup(snippet_text,'html.parser')
-
+        
         return snippet_soup.get_text()
-
-

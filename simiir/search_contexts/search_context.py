@@ -257,6 +257,12 @@ class SearchContext(object):
         """
         return self._last_serp_impression
     
+    def get_session_query_count(self):
+        """
+        Returns the number of queries that have been issued in the simulated search session.
+        """
+        return len(self._issued_queries)
+    
     def get_last_query(self):
         """
         Returns the previous query issued. If no previous query has been issued, None is returned.
