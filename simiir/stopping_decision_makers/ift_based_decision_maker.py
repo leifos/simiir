@@ -22,23 +22,19 @@ class IftBasedDecisionMaker(BaseDecisionMaker):
         self.__query_time = query_time
         self.__doc_time = doc_time
         self.__discount = discount # how much the gain a ranks is discounted
-
-
-
+        
     def decide(self):
         """
         First checks to see if the rank threshold is exceeded, i.e. have they seen enough to make an estimate of the gain
         if so, then, is the current rate of gain greater than or equal to the average rate of gain, if so SNIPPET, else QUERY
-
         """
-
         if self._search_context.get_current_serp_position() <  self.__rank_threshold:
             return Actions.SNIPPET
-
-
+        
         dis_cum_gain = 0.0
         pos = 0.0
         examined_snippets = self._search_context.get_examined_snippets()
+        
         for snippet in examined_snippets:
             pos = pos + 1.0
             j = float(snippet.judgment)
@@ -55,10 +51,7 @@ class IftBasedDecisionMaker(BaseDecisionMaker):
         if avg_dis_cum_gain >= self.__gain_threshold:
             return Actions.SNIPPET
         return Actions.QUERY
-
-
-
-
+        
 class Ift2BasedDecisionMaker(BaseDecisionMaker):
     """
     A concrete implementation of a decision maker.

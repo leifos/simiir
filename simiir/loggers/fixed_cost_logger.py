@@ -88,7 +88,6 @@ class FixedCostLogger(BaseLogger):
         self._total_time = self._total_time + self._query_cost
         self._last_query_time = self._total_time
         self._last_marked_time = self._total_time  # Reset the marked time to zero at the start of the query
-        print "******ISSUED QUERY: " + kwargs['query']
         self._report(Actions.QUERY, **kwargs)
     
     def _log_serp(self, **kwargs):

@@ -381,8 +381,7 @@ class SearchContext(object):
     def get_examined_snippets(self):
         """
         Returns a list of Document objects representing all of the snippets examined by the simulated agent
-        for the CURRENT QUERY.
-        The most recent snippet to be examined is the last document in the list - i.e. snippets are listed in chronological order.
+        for the CURRENT QUERY. The most recent snippet to be examined is the last document in the list - i.e. snippets are listed in chronological order.
         An empty list indicates that no snippets have been examined for the current query.
         """
         return self._snippets_examined
@@ -390,8 +389,7 @@ class SearchContext(object):
     def get_all_examined_snippets(self):
         """
         Returns a list of Document objects representing all of the snippets examined by the simulated agent
-        over the ENTIRE SEARCH SESSION.
-        The most recent snippet to be examined is the last document in the list - i.e. snippets are listed in chronological order.
+        over the ENTIRE SEARCH SESSION. The most recent snippet to be examined is the last document in the list - i.e. snippets are listed in chronological order.
         An empty list indicates that no snippets have been examined in the entire search session.
         """
         return self._all_snippets_examined

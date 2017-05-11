@@ -16,7 +16,7 @@ class SequentialNonrelDecisionMakerSkip(BaseDecisionMaker):
         Otherwise, a new query should be issued.
         """
         counter = 0
-        examined_snippets = self._search_context.get_examined_snippets()[::]  # Reverse list
+        examined_snippets = self._search_context.get_examined_snippets()
         previous = []
         
         for snippet in examined_snippets:

@@ -16,7 +16,7 @@ class TotalNonrelDecisionMaker(BaseDecisionMaker):
         Otherwise, a new query should be issued.
         """
         counter = 0
-        examined_snippets = self._search_context.get_examined_snippets()[::-1]  # Reverse list
+        examined_snippets = self._search_context.get_examined_snippets()
         
         # If the judgment for a snippet is -1, then it was seen previously and was therefore not judged - so we should skip it.
         
