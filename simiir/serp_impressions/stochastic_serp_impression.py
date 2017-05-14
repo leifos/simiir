@@ -11,10 +11,10 @@ class StochasticSERPImpression(BaseSERPImpression):
     For determining the patch type, seeded judgements are used (as per text classifiers).
     Patch type does not affect the SERP judgement, so this should be okay to use.
     """
-    def __init__(self, search_context, topic, viewport_size=10, examine_probability=0.5, patch_type_threshold=0.4, qrel_file=None):
+    def __init__(self, search_context, topic, viewport_size=10, abandon_probability=0.5, patch_type_threshold=0.4, qrel_file=None):
         super(StochasticSERPImpression, self).__init__(search_context, topic, patch_type_threshold=patch_type_threshold)
         self.__viewport_size = viewport_size
-        self.__examine_probability = examine_probability
+        self.__abandon_probability = abandon_probability
         self.__qrel_handler = TrecQrelHandler(qrel_file)
     
     def initialise(self):
@@ -29,10 +29,10 @@ class StochasticSERPImpression(BaseSERPImpression):
         """
         die_roll = random.random()
         
-        if die_roll > self.__examine_probability:
-            examine = False
-        else:
+        if die_roll > self.__abandon_probability:
             examine = True
+        else:
+            examine = False
         
         judgements = self.__get_patch_judgements()
         patch_type = self._calculate_patch_type(judgements)
