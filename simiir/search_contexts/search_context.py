@@ -68,6 +68,9 @@ class SearchContext(object):
         self._issued_queries = []                # A list of queries issued in chronological order.
         self._serp_impressions = []              # A list of SERP impressions in chronological order. The length == issued_queries above.
         
+        self._attractive_serp_impressions = []    # A list of all the SERP judgements in the session that were deemed attractive enough to examine in more detail.
+        self._unattractive_serp_impressions = []  # All serp judgements in the session that were deemed unattractive and skipped over.
+        
         self._current_serp_position = 0          # The position in the current SERP we are currently looking at (zero-based!)
                                                  # This counter is used for the current snippet and document.
         
@@ -83,6 +86,7 @@ class SearchContext(object):
 
         self.query_limit = 0                     # 0 - no limit on the number issued. Otherwise, the number of queries is capped
         self.relevance_revision = 0              # 0 - no revising of relevance judgements, 1- updates the relevance judgement of snippets
+        
     
     @property
     def relevance_revision(self):
@@ -119,13 +123,17 @@ class SearchContext(object):
         return_string = "    Number of Queries Issued: {0}{1}".format(len(self._issued_queries), os.linesep)
         return_string = return_string + "    Number of Snippets Examined: {0}{1}".format(len(self._all_snippets_examined), os.linesep)
         return_string = return_string + "    Number of Documents Examined: {0}{1}".format(len(self._all_documents_examined), os.linesep)
-        return_string = return_string + "    Number of Documents Marked Relevant: {0}".format(len(self._relevant_documents))
+        return_string = return_string + "    Number of Documents Marked Relevant: {0}{1}".format(len(self._relevant_documents), os.linesep)
+        return_string = return_string + "    Number of Attractive SERPs Examined: {0}{1}".format(len(self._attractive_serp_impressions), os.linesep)
+        return_string = return_string + "    Number of Unattractive SERPs Examined: {0}".format(len(self._unattractive_serp_impressions))
         
         self._output_controller.log_info(info_type="SUMMARY")
         self._output_controller.log_info(info_type="TOTAL_QUERIES_ISSUED", text=len(self._issued_queries))
         self._output_controller.log_info(info_type="TOTAL_SNIPPETS_EXAMINED", text=len(self._all_snippets_examined))
         self._output_controller.log_info(info_type="TOTAL_DOCUMENTS_EXAMINED", text=len(self._all_documents_examined))
         self._output_controller.log_info(info_type="TOTAL_DOCUMENTS_MARKED_RELEVANT", text=len(self._relevant_documents))
+        self._output_controller.log_info(info_type="TOTAL_ATTRACTIVE_SERP_IMPRESSIONS", text=len(self._attractive_serp_impressions))
+        self._output_controller.log_info(info_type="TOTAL_UNATTRACTIVE_SERP_IMPRESSIONS", text=len(self._unattractive_serp_impressions))
         
         return return_string
 
@@ -250,6 +258,11 @@ class SearchContext(object):
         Updates the SERP impression attribute.
         """
         self._last_serp_impression = serp_impression
+        
+        if serp_impression.impression_judgement:
+            self._attractive_serp_impressions.append(serp_impression)
+        else:
+            self._unattractive_serp_impressions.append(serp_impression)
     
     def get_last_serp_impression(self):
         """
