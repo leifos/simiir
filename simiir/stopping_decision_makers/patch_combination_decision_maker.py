@@ -2,7 +2,7 @@ from loggers import Actions
 from serp_impressions import PatchTypes
 from stopping_decision_makers.base_decision_maker import BaseDecisionMaker
 from stopping_decision_makers.time_since_relevancy_decision_maker import TimeSinceRelevancyDecisionMaker
-from stopping_decision_makers.time_limited_satisfaction_decision_maker import TimeLimitedSatisfactionDecisionMaker
+from stopping_decision_makers.limited_satisfaction_decision_maker import LimitedSatisfactionDecisionMaker
 
 class PatchCombinationDecisionMaker(BaseDecisionMaker):
     """
@@ -10,15 +10,15 @@ class PatchCombinationDecisionMaker(BaseDecisionMaker):
     (Stephens and Krebs, 1986, Section 8.3). This stopping strategy is essentially a proxy -- depending upon the how the patch (or SERP)
     has been judged by the searcher (through the SERP impression module), a different stopping strategy is employed.
     
-    For a patch judged to yield high gain early on, we employ the time-limited satisfaction rule (TimeLimitedSatisfactionDecisionMaker).
+    For a patch judged to yield high gain early on, we employ the limited satisfaction rule (LimitedSatisfactionDecisionMaker).
     Otherwise, for a patch that depresses gradually, we employ the giving up time-based rule (TimeSinceRelevancyDecisionMaker).
     
     If the patch has not been judged, this stopping strategy raises an exception as we cannot deduce what strategy to employ.
     
-    The time limitation of the satisfaction rule is added by us; it inherently makes sense to do so in case the judging of the SERP
-    initially proves to be incorrect, and it's hard to find a certain number of relevant items.
+    The limited satisfaction rule is added by us; it inherently makes sense to do so in case the judging of the SERP
+    initially proves to be incorrect, and it's hard to find a certain number of relevant items -- the user will abandon after two pages of rubbish.
     """
-    def __init__(self, search_context, logger, relevant_threshold=3, timeout_threshold=60, on_mark=True):
+    def __init__(self, search_context, logger, relevant_threshold=3, timeout_threshold=60, on_mark=True, serp_size=10, nonrelevant_threshold=10):
         """
         Instantiates the combination foraging theory decision maker.
         Requires parameters from both the TimeLimitedSatisfactionDecisionMaker and TimeSinceRelevancyDecisionMaker strategies.
@@ -26,7 +26,9 @@ class PatchCombinationDecisionMaker(BaseDecisionMaker):
         super(PatchCombinationDecisionMaker, self).__init__(search_context, logger)
         self.__relevant_threshold = relevant_threshold
         self.__timeout_threshold = timeout_threshold
+        self.__serp_size = serp_size
         self.__on_mark = on_mark
+        self.__nonrelevant_threshold = nonrelevant_threshold
         
         self.__last_patch_type = None  # What was the last patch type? We record this so we change the strategy as required.
         self.__strategy = None  # Represents a reference to the stopping strategy that is chosen to be used.
@@ -66,10 +68,12 @@ class PatchCombinationDecisionMaker(BaseDecisionMaker):
         """
         Sets the stopping strategy to the satisfaction stopping strategy.
         """
-        self.__strategy = TimeLimitedSatisfactionDecisionMaker(search_context=self._search_context,
-                                                               logger=self._logger,
-                                                               relevant_threshold=self.__relevant_threshold,
-                                                               timeout_threshold=self.__timeout_threshold)
+        self.__strategy = LimitedSatisfactionDecisionMaker(search_context=self._search_context,
+                                                           logger=self._logger,
+                                                           relevant_threshold=self.__relevant_threshold,
+                                                           serp_size=self.__serp_size,
+                                                           nonrelevant_threshold=self.__nonrelevant_threshold,
+                                                           consider_documents=self.__on_mark)
     
     def __set_time_limited(self):
         """
