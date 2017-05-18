@@ -11,10 +11,11 @@ class StochasticSERPImpression(BaseSERPImpression):
     For determining the patch type, seeded judgements are used (as per text classifiers).
     Patch type does not affect the SERP judgement, so this should be okay to use.
     """
-    def __init__(self, search_context, topic, viewport_size=10, abandon_probability=0.5, patch_type_threshold=0.4, qrel_file=None):
+    def __init__(self, search_context, topic, viewport_size=10, good_abandon_probability=0.5, bad_abandon_probability=0.5, patch_type_threshold=0.4, qrel_file=None):
         super(StochasticSERPImpression, self).__init__(search_context, topic, patch_type_threshold=patch_type_threshold)
         self.__viewport_size = viewport_size
-        self.__abandon_probability = abandon_probability
+        self.__good_abandon_probability = good_abandon_probability
+        self.__bad_abandon_probability = bad_abandon_probability
         self.__qrel_handler = TrecQrelHandler(qrel_file)
     
     def initialise(self):
@@ -35,11 +36,18 @@ class StochasticSERPImpression(BaseSERPImpression):
         avg = sum(judgements) / float(len(judgements))
         die_roll = random.random()
         
-        # If it's a poor SERP AND the roll of the dice dictates that you should abandon, abandon!
-        if avg <= one_rel and die_roll <= self.__abandon_probability:
+        # If it's a poor SERP... roll the dice and abandon if everything checks out.
+        if avg <= one_rel:
+            
+            if die_roll <= self.__bad_abandon_probability:
+                return SERPImpression(False, patch_type)
+            else:
+                return SERPImpression(True, patch_type)
+        
+        # If we get here, the patch is considered "good"
+        if die_roll <= self.__good_abandon_probability:
             return SERPImpression(False, patch_type)
         
-        # If you get here, then we return True.
         return SERPImpression(True, patch_type)
     
     def __get_patch_judgements(self):
