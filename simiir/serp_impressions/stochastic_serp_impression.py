@@ -27,17 +27,20 @@ class StochasticSERPImpression(BaseSERPImpression):
         """
         Simplistic approach; always assume that the SERP has some degree of relevancy, thus the searcher enters the SERP to judge snippets.
         """
-        die_roll = random.random()
-        
-        if die_roll > self.__abandon_probability:
-            examine = True
-        else:
-            examine = False
-        
         judgements = self.__get_patch_judgements()
         patch_type = self._calculate_patch_type(judgements)
         
-        return SERPImpression(examine, patch_type)
+        # Judgement of SERP is proportional to the finding of one item in the viewable area.
+        one_rel = 1.0 / len(judgements)
+        avg = sum(judgements) / float(len(judgements))
+        die_roll = random.random()
+        
+        # If it's a poor SERP AND the roll of the dice dictates that you should abandon, abandon!
+        if avg <= one_rel and die_roll <= self.__abandon_probability:
+            return SERPImpression(False, patch_type)
+        
+        # If you get here, then we return True.
+        return SERPImpression(True, patch_type)
     
     def __get_patch_judgements(self):
         """
