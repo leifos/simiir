@@ -21,7 +21,7 @@ class LimitedSatisfactionDecisionMaker(SatisfactionDecisionMaker):
         Instantiates the decision maker, using a default relevant threshold of 3, a SERP size of 10 and a
         nonrelevant threshold of 10 (equivalent of one page of the SERP).
         """
-        super(LimitedSatisfactionDecisionMaker, self).__init__(search_context, logger)
+        super(LimitedSatisfactionDecisionMaker, self).__init__(search_context, logger, relevant_threshold=relevant_threshold)
         self.__relevant_threshold = relevant_threshold  # The threshold; get to this point, and we abandon the SERP.
         self.__serp_size = serp_size
         self.__nonrelevant_threshold = nonrelevant_threshold
