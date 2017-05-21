@@ -43,7 +43,7 @@ class LimitedSatisfactionDecisionMaker(SatisfactionDecisionMaker):
         elif serp_position - last_relevant_rank == self.__nonrelevant_threshold:
             return Actions.QUERY
         
-        return Actions.SNIPPET
+        return satisfaction_decision
     
     def __get_relevant_count(self):
         """
