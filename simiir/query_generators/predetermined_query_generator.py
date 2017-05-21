@@ -19,7 +19,7 @@ class PredeterminedQueryGenerator(BaseQueryGenerator):
         """
         Initialises the class.
         """
-        super(PredeterminedQueryGenerator, self).__init__(stopword_file, background_file=[])
+        super(PredeterminedQueryGenerator, self).__init__(stopword_file, background_file=[], allow_similar=True)
         self.__query_filename = query_file
         self.__user = user
     

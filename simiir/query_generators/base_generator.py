@@ -20,13 +20,14 @@ class BaseQueryGenerator(object):
 
     You can use this to inherit from to make your own query generator
     """
-    def __init__(self, stopword_file, background_file=None):
+    def __init__(self, stopword_file, background_file=None, allow_similar=False):
         self._stopword_file = stopword_file
         self._background_file = background_file
         self.updating = False
         self.update_method = 1
         self._query_list = None
         self.background_language_model = None
+        self.__allow_similar = allow_similar
 
         if self._background_file:
             self.background_language_model = lm_methods.read_in_background(self._background_file)
@@ -113,6 +114,12 @@ class BaseQueryGenerator(object):
         
         for query in self._query_list:
             candidate_query = query[0]
+            
+            # Allow similar queries to be issued (perhaps for mirroring real-world users)
+            if self.__allow_similar and not self._has_query_been_issued(issued_query_list, candidate_query):
+                return candidate_query
+            
+            # Otherwise, we are generating queries synthetically so we disallow this.
             if not self._has_query_been_issued(issued_query_list, candidate_query):
                 if not self._had_similar_query_been_issued(issued_query_list, candidate_query):
                     return candidate_query  # This query has not been issued before, so say it's the next one to issue!
