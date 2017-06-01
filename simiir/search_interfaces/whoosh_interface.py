@@ -1,8 +1,8 @@
 import os
 from whoosh.index import open_dir
-from search_interfaces import Document
+from simiir.search_interfaces import Document
 from ifind.search.engines.whooshtrec import Whooshtrec
-from search_interfaces.base_interface import BaseSearchInterface
+from simiir.search_interfaces.base_interface import BaseSearchInterface
 import logging
 
 log = logging.getLogger('simuser.search_interfaces.whoosh_interface')
