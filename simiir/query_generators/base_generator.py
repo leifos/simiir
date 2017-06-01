@@ -28,7 +28,7 @@ class BaseQueryGenerator(object):
         self._query_list = None
         self.background_language_model = None
         self.__allow_similar = allow_similar
-
+        
         if self._background_file:
             self.background_language_model = lm_methods.read_in_background(self._background_file)
 
