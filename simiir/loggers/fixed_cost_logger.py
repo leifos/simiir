@@ -104,7 +104,9 @@ class FixedCostLogger(BaseLogger):
         Increments __total_time to reflect the cost of examining a snippet.
         """
         self._total_time = self._total_time + self._snippet_cost
-        self._report(Actions.SNIPPET, doc_id=kwargs['snippet'].doc_id)
+        kwargs['doc_id'] = kwargs['snippet'].doc_id
+        
+        self._report(Actions.SNIPPET, **kwargs)
         
         if kwargs['snippet'].judgment > 0:
             self._last_relevant_snippet_time = self._total_time
