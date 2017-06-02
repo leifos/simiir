@@ -1,4 +1,4 @@
-import random
+from random import Random
 from simiir.search_interfaces import Document
 from ifind.seeker.trec_qrel_handler import TrecQrelHandler
 from simiir.serp_impressions import PatchTypes, SERPImpression
@@ -11,12 +11,15 @@ class StochasticSERPImpression(BaseSERPImpression):
     For determining the patch type, seeded judgements are used (as per text classifiers).
     Patch type does not affect the SERP judgement, so this should be okay to use.
     """
-    def __init__(self, search_context, topic, viewport_size=10, good_abandon_probability=0.5, bad_abandon_probability=0.5, patch_type_threshold=0.4, qrel_file=None):
+    def __init__(self, search_context, topic, viewport_size=10, good_abandon_probability=0.5, bad_abandon_probability=0.5, patch_type_threshold=0.4, qrel_file=None, base_seed=0):
         super(StochasticSERPImpression, self).__init__(search_context, topic, patch_type_threshold=patch_type_threshold)
         self.__viewport_size = viewport_size
         self.__good_abandon_probability = good_abandon_probability
         self.__bad_abandon_probability = bad_abandon_probability
         self.__qrel_handler = TrecQrelHandler(qrel_file)
+        
+        self.__random = Random()
+        self.__random.seed(base_seed + 0)  # Just use base_seed for the seed value
     
     def initialise(self):
         """
@@ -34,7 +37,7 @@ class StochasticSERPImpression(BaseSERPImpression):
         # Judgement of SERP is proportional to the finding of one item in the viewable area.
         one_rel = 1.0 / len(judgements)
         avg = sum(judgements) / float(len(judgements))
-        die_roll = random.random()
+        die_roll = self.__random.random()
         
         # If it's a poor SERP... roll the dice and abandon if everything checks out.
         if avg <= one_rel:

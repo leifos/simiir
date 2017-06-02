@@ -1,4 +1,4 @@
-import random
+from random import Random
 from loggers import Actions
 from stopping_decision_makers.base_decision_maker import BaseDecisionMaker
 
@@ -7,12 +7,15 @@ class INSTDecisionMaker(BaseDecisionMaker):
     A decision maker implementing the INST metric.
     Equations from Moffat et al. (ADCS 2015)
     """
-    def __init__(self, search_context, logger, t=5):
+    def __init__(self, search_context, logger, t=5, base_seed=0):
         """
         Instantiates the decision maker, with a T (expected documents to find) value of 5.
         """
         super(INSTDecisionMaker, self).__init__(search_context, logger)
         self.__t = t
+        
+        self.__random = Random()
+        self.__random.seed(base_seed + 512)
         
     def decide(self):
         """
@@ -31,7 +34,7 @@ class INSTDecisionMaker(BaseDecisionMaker):
         else:
             w_1 = self.__calculate_W1(examined_snippets)
         
-        dp = random.random()
+        dp = self.__random.random()
         
         if dp > (w_i / w_1):
             return Actions.QUERY

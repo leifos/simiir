@@ -2,9 +2,9 @@ __author__ = 'leif'
 
 
 import abc
+from random import Random
 from simiir.text_classifiers.base_informed_trec_classifier import BaseInformedTrecTextClassifier
 from ifind.seeker.trec_qrel_handler import TrecQrelHandler
-from random import random
 
 class StochasticInformedTrecTextClassifier(BaseInformedTrecTextClassifier):
     """
@@ -15,14 +15,17 @@ class StochasticInformedTrecTextClassifier(BaseInformedTrecTextClassifier):
     rprob and nprob are set to 1.0 by default, so that the classifier is deterministic,
     i.e. it returns the exact TREC relevance judgement
     """
-    def __init__(self, topic, search_context, qrel_file, rprob=1.0, nprob=1.0):
+    def __init__(self, topic, search_context, qrel_file, rprob=1.0, nprob=1.0, base_seed=0):
         """
 
         """
         super(StochasticInformedTrecTextClassifier, self).__init__(topic, search_context, qrel_file)
-
+        
         self._rel_prob = rprob
         self._nrel_prob = nprob
+        
+        self.__random = Random()
+        self.__random.seed(base_seed + 128)
 
     @abc.abstractmethod
     def is_relevant(self, document):
@@ -30,7 +33,7 @@ class StochasticInformedTrecTextClassifier(BaseInformedTrecTextClassifier):
         Rolls the dice, and decides whether a relevant document stays relevant or not (and similarly for a non-relevant).
         """
         val = self._get_judgment(self._topic.id, document.doc_id)
-        dp = random()
+        dp = self.__random.random()
         
         if val > 0: # if the judgement is relevant
             if dp > self._rel_prob:
