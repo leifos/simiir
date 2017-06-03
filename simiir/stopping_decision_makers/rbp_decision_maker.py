@@ -16,7 +16,7 @@ class RBPDecisionMaker(BaseDecisionMaker):
         self.__patience = patience
         
         self.__random = Random()
-        self.__random.seed(base_seed + 512)
+        self.__random.seed(base_seed + 1024)
         
     def decide(self):
         """

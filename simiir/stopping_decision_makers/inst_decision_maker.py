@@ -15,7 +15,7 @@ class INSTDecisionMaker(BaseDecisionMaker):
         self.__t = t
         
         self.__random = Random()
-        self.__random.seed(base_seed + 512)
+        self.__random.seed(base_seed + 1024)
         
     def decide(self):
         """

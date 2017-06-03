@@ -25,7 +25,7 @@ class StochasticInformedTrecTextClassifier(BaseInformedTrecTextClassifier):
         self._nrel_prob = nprob
         
         self.__random = Random()
-        self.__random.seed(base_seed + 128)
+        self.__random.seed(base_seed + 256)
 
     @abc.abstractmethod
     def is_relevant(self, document):
