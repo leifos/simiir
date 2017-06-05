@@ -18,7 +18,16 @@ class InformedFileDataHandler(object):
         Can be overriden by inheriting classes to read the handler from other sources.
         Must return an instance of a TrecQrelHandler.
         """
-        return TrecQrelHandler(filename)
+        
+        import time
+        start_time = time.time()
+        handler = TrecQrelHandler(filename)
+        print("--- %s seconds ---" % (time.time() - start_time))
+        
+        print handler
+        
+        
+        #return TrecQrelHandler(filename)
     
     def get_value(self, topic_id, doc_id):
         """
