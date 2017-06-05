@@ -5,8 +5,8 @@ class PerfectTrecTextClassifier(StochasticInformedTrecTextClassifier):
     """
     A simple text classifier that only judges items as relevant if they are actually TREC relevant.
     """
-    def __init__(self, topic, search_context, qrel_file):
-        super(StochasticInformedTrecTextClassifier, self).__init__(topic, search_context, qrel_file)
+    def __init__(self, topic, search_context, qrel_file, host=None, port=0):
+        super(StochasticInformedTrecTextClassifier, self).__init__(topic, search_context, qrel_file, host=None, port=0)
     
     def is_relevant(self, document):
         """
