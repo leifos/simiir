@@ -23,16 +23,16 @@ def main(config_filename):
         progress = ProgressIndicator(configuration)
         #configuration.output.display_config()
         
-        print dir(configuration)
+        print "Running experiment base_id".format(base_id=configuration.base_id),
         
         while not configuration.user.logger.is_finished():
             #progress.update()  # Update the progress indicator in the terminal.
             user.decide_action()
         
-        configuration.output.display_report()
+        #configuration.output.display_report()
+        print "complete."
         configuration.output.save()
-        
-        # gc.collect()
+        gc.collect()
 
     completed_file = open(os.path.join(config_reader.get_base_dir(), 'COMPLETED'), 'w')
     completed_file.close()
