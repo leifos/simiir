@@ -6,6 +6,8 @@ from config_readers.simulation_config_reader import SimulationConfigReader
 import gc
 import logging
 
+import time
+
 
 def main(config_filename):
     """
@@ -20,7 +22,13 @@ def main(config_filename):
 
     
     for configuration in config_reader:
+        
+        start_time = time.time()
         user = SimulatedUser(configuration)
+        print("--- %s user seconds ---" % (time.time() - start_time))
+        
+        
+        #user = SimulatedUser(configuration)
 
         progress = ProgressIndicator(configuration)
         
