@@ -2,7 +2,7 @@ __author__ = 'david'
 
 import abc
 from simiir.text_classifiers.base_classifier import BaseTextClassifier
-from simiir.text_classifiers.data_handlers import InformedFileDataHandler, InformedRedisDataHandler
+from simiir.utils.data_handlers import InformedFileDataHandler, InformedRedisDataHandler
 from random import random
 import logging
 
@@ -14,14 +14,19 @@ class BaseInformedTrecTextClassifier(BaseTextClassifier):
 
     Abstract method is_relevant() needs to be implemented.
     """
-    def __init__(self, topic, search_context, qrel_file):
+    def __init__(self, topic, search_context, qrel_file, host=None, port=0):
         """
         Initialises an instance of the classifier.
         """
         super(BaseInformedTrecTextClassifier, self).__init__(topic, search_context, stopword_file=[], background_file=[])
-        
         self._filename = qrel_file
-        self.data_handler = 0  # Sets the data handler to 0 by default (file-based). Can also set to 1 (Redis-based).
+        self._host = host
+        self._port = port
+        
+        if self._host is not None:
+            self.data_handler = 1  # Given a hostname; assume that a Redis cache will be used.
+        else:
+            self.data_handler = 0  # Sets the data handler to 0 by default (file-based). Can also set to 1 (Redis-based).
     
     @property
     def data_handler(self):
@@ -43,17 +48,17 @@ class BaseInformedTrecTextClassifier(BaseTextClassifier):
             0: InformedFileDataHandler,
             1: InformedRedisDataHandler
         }
-
+        
         if value not in dh_strategies.keys():
             raise ValueError("Value {0} for the data handler approach is not valid.".format(value))
-
-        self._data_handler = dh_strategies[value](self._filename)
+        
+        self._data_handler = dh_strategies[value](self._filename, host=self._host, port=self._port)
     
     def make_topic_language_model(self):
         """
         
         """
-        log.debug("No Topic model required for this Trec Classifier")
+        log.debug("No Topic model required for this TREC Classifier")
     
     
     def _get_judgment(self, topic_id, doc_id):

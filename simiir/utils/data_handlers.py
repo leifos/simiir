@@ -2,6 +2,7 @@ __author__ = 'david'
 
 import os
 import redis
+import base64
 import cPickle
 from ifind.seeker.trec_qrel_handler import TrecQrelHandler
 
@@ -18,16 +19,7 @@ class InformedFileDataHandler(object):
         Can be overriden by inheriting classes to read the handler from other sources.
         Must return an instance of a TrecQrelHandler.
         """
-        
-        import time
-        start_time = time.time()
-        handler = TrecQrelHandler(filename)
-        print("--- %s seconds ---" % (time.time() - start_time))
-        
-        return handler
-        
-        
-        #return TrecQrelHandler(filename)
+        return TrecQrelHandler(filename)
     
     def get_value(self, topic_id, doc_id):
         """
@@ -51,6 +43,9 @@ class InformedRedisDataHandler(InformedFileDataHandler):
         """
         key = os.path.split(filename)[1]  # Better way to construct a key, from the file hash or something?
                                           # At present, it simply strips the filename from the string.
+        
+        key = "Informed::{hashed_key}".format(hashed_key=hash(key))
+        
         cache = redis.StrictRedis(host=kwargs['host'], port=kwargs['port'], db=0)
         
         if cache.get(key):
