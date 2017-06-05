@@ -24,7 +24,7 @@ class InformedFileDataHandler(object):
         handler = TrecQrelHandler(filename)
         print("--- %s seconds ---" % (time.time() - start_time))
         
-        print handler
+        return handler
         
         
         #return TrecQrelHandler(filename)
