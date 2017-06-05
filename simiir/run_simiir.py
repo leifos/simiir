@@ -17,11 +17,11 @@ def main(config_filename):
     config_reader = SimulationConfigReader(config_filename)
     
     for configuration in config_reader:
+        print "Running experiment {base_id}...".format(base_id=configuration.base_id),
+        
         user = SimulatedUser(configuration)
         progress = ProgressIndicator(configuration)
         #configuration.output.display_config()
-        
-        print "Running experiment {base_id}...".format(base_id=configuration.base_id),
         
         while not configuration.user.logger.is_finished():
             #progress.update()  # Update the progress indicator in the terminal.
