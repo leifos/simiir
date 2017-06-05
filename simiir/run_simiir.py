@@ -16,22 +16,19 @@ def main(config_filename):
     Then save, report, and repeat ad naseum.
     """
     logging.basicConfig(filename='sim.log',level=logging.DEBUG)
-
+    
+    
+    start_time = time.time()
     config_reader = SimulationConfigReader(config_filename)
-
-
+    print("--- %s config seconds ---" % (time.time() - start_time))
+    
+    #config_reader = SimulationConfigReader(config_filename)
+    
+    
     
     for configuration in config_reader:
-        
-        start_time = time.time()
         user = SimulatedUser(configuration)
-        print("--- %s user seconds ---" % (time.time() - start_time))
-        
-        
-        #user = SimulatedUser(configuration)
-
         progress = ProgressIndicator(configuration)
-        
         configuration.output.display_config()
         
         while not configuration.user.logger.is_finished():
