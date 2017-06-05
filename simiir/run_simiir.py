@@ -6,8 +6,6 @@ from config_readers.simulation_config_reader import SimulationConfigReader
 import gc
 import logging
 
-import time
-
 
 def main(config_filename):
     """
@@ -23,7 +21,7 @@ def main(config_filename):
         progress = ProgressIndicator(configuration)
         #configuration.output.display_config()
         
-        print "Running experiment {base_id}".format(base_id=configuration.base_id),
+        print "Running experiment {base_id}...".format(base_id=configuration.base_id),
         
         while not configuration.user.logger.is_finished():
             #progress.update()  # Update the progress indicator in the terminal.
@@ -37,11 +35,13 @@ def main(config_filename):
     completed_file = open(os.path.join(config_reader.get_base_dir(), 'COMPLETED'), 'w')
     completed_file.close()
 
+
 def usage(script_name):
     """
     Prints the usage message to the output stream.
     """
     print "Usage: {0} [configuration_filename]".format(script_name)
+
 
 if __name__ == '__main__':
     if len(sys.argv) < 2 or len(sys.argv) > 2:
