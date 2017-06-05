@@ -16,15 +16,7 @@ def main(config_filename):
     Then save, report, and repeat ad naseum.
     """
     logging.basicConfig(filename='sim.log',level=logging.DEBUG)
-    
-    
-    start_time = time.time()
     config_reader = SimulationConfigReader(config_filename)
-    print("--- %s config seconds ---" % (time.time() - start_time))
-    
-    #config_reader = SimulationConfigReader(config_filename)
-    
-    
     
     for configuration in config_reader:
         user = SimulatedUser(configuration)
@@ -37,7 +29,13 @@ def main(config_filename):
         
         configuration.output.display_report()
         configuration.output.save()
+        
+        start_time = time.time()
+        #
         gc.collect()
+        print("--- %s gc seconds ---" % (time.time() - start_time))
+        
+        # gc.collect()
 
     completed_file = open(os.path.join(config_reader.get_base_dir(), 'COMPLETED'), 'w')
     completed_file.close()
