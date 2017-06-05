@@ -21,7 +21,7 @@ def main(config_filename):
     for configuration in config_reader:
         user = SimulatedUser(configuration)
         progress = ProgressIndicator(configuration)
-        configuration.output.display_config()
+        #configuration.output.display_config()
         
         while not configuration.user.logger.is_finished():
             #progress.update()  # Update the progress indicator in the terminal.
@@ -29,11 +29,6 @@ def main(config_filename):
         
         configuration.output.display_report()
         configuration.output.save()
-        
-        start_time = time.time()
-        #
-        gc.collect()
-        print("--- %s gc seconds ---" % (time.time() - start_time))
         
         # gc.collect()
 
