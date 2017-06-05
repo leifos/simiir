@@ -23,7 +23,7 @@ def main(config_filename):
         progress = ProgressIndicator(configuration)
         #configuration.output.display_config()
         
-        print configuration
+        print dir(configuration)
         
         while not configuration.user.logger.is_finished():
             #progress.update()  # Update the progress indicator in the terminal.
