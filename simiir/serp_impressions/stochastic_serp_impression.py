@@ -4,7 +4,7 @@ from simiir.search_interfaces import Document
 from ifind.seeker.trec_qrel_handler import TrecQrelHandler
 from simiir.serp_impressions import PatchTypes, SERPImpression
 from simiir.serp_impressions.base_serp_impression import BaseSERPImpression
-from simiir.utils.data_handlers import InformedFileDataHandler, InformedRedisDataHandler
+from simiir.utils.data_handlers import get_data_handler
 
 class StochasticSERPImpression(BaseSERPImpression):
     """
@@ -23,10 +23,7 @@ class StochasticSERPImpression(BaseSERPImpression):
         self._port = port
         self._filename = qrel_file
         
-        if self._host is not None:
-            self.data_handler = 1  # Given a hostname; assume that a Redis cache will be used.
-        else:
-            self.data_handler = 0  # Sets the data handler to 0 by default (file-based). Can also set to 1 (Redis-based).
+        self._data_handler = get_data_handler(filename=self._filename, host=self._host, port=self._port, key_prefix='serp')
         
         self.__random = Random()
         self.__random.seed(base_seed + 0)  # Just use base_seed for the seed value
@@ -36,51 +33,6 @@ class StochasticSERPImpression(BaseSERPImpression):
         No prior initialisations are required.
         """
         pass
-    
-    @property
-    def data_handler(self):
-        """
-        Setter for the relevance revision technique.
-        """
-        if not hasattr(self, '_data_handler'):
-            self._data_handler = 0
-
-        return self._data_handler
-    
-    @data_handler.setter
-    def data_handler(self, value):
-        """
-        The getter for the relevance revision technique.
-        Given one of the key values in rr_strategies below, instantiates the relevant approach.
-        """
-        dh_strategies = {
-            0: InformedFileDataHandler,
-            1: InformedRedisDataHandler
-        }
-        
-        if value not in dh_strategies.keys():
-            raise ValueError("Value {0} for the data handler approach is not valid.".format(value))
-        
-        self._data_handler = dh_strategies[value](self._filename, host=self._host, port=self._port)
-    
-    def _get_handler_judgement(self, topic_id, doc_id):
-        """
-        Helper function that returns the judgement of the document
-        If the value does not exist in the qrels, it checks topic '0' - a non-existant topic, which you can put pre-rolled relevance values
-        The default value returned is 0, indicated no gain/non-relevant.
-
-        topic_id (string): the TREC topic number
-        doc_id (srting): the TREC document number
-        """
-        val = self._data_handler.get_value(topic_id, doc_id)  # Does the document exist?
-                                                              # Pulls the answer from the data handler.
-        
-        if not val:  # If not, we fall back to the generic topic.
-            val = self._data_handler.get_value('0', doc_id)
-        if not val:  # if still no val, assume the document is not relevant.
-            val = 0
-        
-        return val
     
     def get_impression(self):
         """
@@ -133,7 +85,7 @@ class StochasticSERPImpression(BaseSERPImpression):
         Gets the judgement for the given document (and topic, defined in BaseSERPImpression).
         If the document doesn't exist, then we try the fallback topic; else we return 0.
         """
-        val = self._get_handler_judgement(self._topic.id, doc_id)  # Does the document exist?
+        val = self._data_handler.get_value_fallback(self._topic.id, doc_id)  # Does the document exist?
         
         if not val:  # If not, we fall back to the generic topic.
             val = self._get_handler_judgement('0', doc_id)

@@ -2,7 +2,7 @@ __author__ = 'david'
 
 import abc
 from simiir.text_classifiers.base_classifier import BaseTextClassifier
-from simiir.utils.data_handlers import InformedFileDataHandler, InformedRedisDataHandler
+from simiir.utils.data_handlers import get_data_handler
 from random import random
 import logging
 
@@ -22,37 +22,8 @@ class BaseInformedTrecTextClassifier(BaseTextClassifier):
         self._filename = qrel_file
         self._host = host
         self._port = port
-        
-        if self._host is not None:
-            self.data_handler = 1  # Given a hostname; assume that a Redis cache will be used.
-        else:
-            self.data_handler = 0  # Sets the data handler to 0 by default (file-based). Can also set to 1 (Redis-based).
+        self._data_handler = get_data_handler(filename=self._filename, host=self._host, port=self._port, key_prefix='informed')
     
-    @property
-    def data_handler(self):
-        """
-        Setter for the relevance revision technique.
-        """
-        if not hasattr(self, '_data_handler'):
-            self._data_handler = 0
-
-        return self._data_handler
-
-    @data_handler.setter
-    def data_handler(self, value):
-        """
-        The getter for the relevance revision technique.
-        Given one of the key values in rr_strategies below, instantiates the relevant approach.
-        """
-        dh_strategies = {
-            0: InformedFileDataHandler,
-            1: InformedRedisDataHandler
-        }
-        
-        if value not in dh_strategies.keys():
-            raise ValueError("Value {0} for the data handler approach is not valid.".format(value))
-        
-        self._data_handler = dh_strategies[value](self._filename, host=self._host, port=self._port)
     
     def make_topic_language_model(self):
         """

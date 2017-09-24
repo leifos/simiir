@@ -38,6 +38,8 @@ class StochasticInformedTrecTextClassifier(BaseInformedTrecTextClassifier):
 
 
         #print(self._rel_prob, self._nrel_prob, dp, val)
+        
+        # Updated by Leif in September 2017.
 
         threshold = self._nrel_prob
         if val > 0:
