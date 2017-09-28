@@ -68,8 +68,8 @@ class SearchContext(object):
         self._issued_queries = []                # A list of queries issued in chronological order.
         self._serp_impressions = []              # A list of SERP impressions in chronological order. The length == issued_queries above.
         
-        self._attractive_serp_impressions = []    # A list of all the SERP judgements in the session that were deemed attractive enough to examine in more detail.
-        self._unattractive_serp_impressions = []  # All serp judgements in the session that were deemed unattractive and skipped over.
+        self._attractive_serp_count = 0          # Count of SERPs viewed that were attractive enough to view.
+        self._unattractive_serp_count = 0        # Count of SERPs viewed that were judged to be unattractive.
         
         self._current_serp_position = 0          # The position in the current SERP we are currently looking at (zero-based!)
                                                  # This counter is used for the current snippet and document.
@@ -124,16 +124,16 @@ class SearchContext(object):
         return_string = return_string + "    Number of Snippets Examined: {0}{1}".format(len(self._all_snippets_examined), os.linesep)
         return_string = return_string + "    Number of Documents Examined: {0}{1}".format(len(self._all_documents_examined), os.linesep)
         return_string = return_string + "    Number of Documents Marked Relevant: {0}{1}".format(len(self._relevant_documents), os.linesep)
-        return_string = return_string + "    Number of Attractive SERPs Examined: {0}{1}".format(len(self._attractive_serp_impressions), os.linesep)
-        return_string = return_string + "    Number of Unattractive SERPs Examined: {0}".format(len(self._unattractive_serp_impressions))
+        return_string = return_string + "    Number of Attractive SERPs Examined: {0}{1}".format(self._attractive_serp_count, os.linesep)
+        return_string = return_string + "    Number of Unattractive SERPs Examined: {0}".format(self._unattractive_serp_count)
         
         self._output_controller.log_info(info_type="SUMMARY")
         self._output_controller.log_info(info_type="TOTAL_QUERIES_ISSUED", text=len(self._issued_queries))
         self._output_controller.log_info(info_type="TOTAL_SNIPPETS_EXAMINED", text=len(self._all_snippets_examined))
         self._output_controller.log_info(info_type="TOTAL_DOCUMENTS_EXAMINED", text=len(self._all_documents_examined))
         self._output_controller.log_info(info_type="TOTAL_DOCUMENTS_MARKED_RELEVANT", text=len(self._relevant_documents))
-        self._output_controller.log_info(info_type="TOTAL_ATTRACTIVE_SERP_IMPRESSIONS", text=len(self._attractive_serp_impressions))
-        self._output_controller.log_info(info_type="TOTAL_UNATTRACTIVE_SERP_IMPRESSIONS", text=len(self._unattractive_serp_impressions))
+        self._output_controller.log_info(info_type="TOTAL_ATTRACTIVE_SERP_IMPRESSIONS", text=self._attractive_serp_count)
+        self._output_controller.log_info(info_type="TOTAL_UNATTRACTIVE_SERP_IMPRESSIONS", text=self._unattractive_serp_count)
         
         return return_string
 
@@ -253,28 +253,41 @@ class SearchContext(object):
         self._last_query = query_object
         self._last_results = self._last_query.response.results
     
+    
+    def get_last_query(self):
+        """
+        Returns the latest query to be issued.
+        If no prior query has been issued, then None is returned.
+        """
+        if len(self._issued_queries) == 0:
+            return None
+        
+        return self._issued_queries[-1]  # Return the last element in the list (the latest item)
+    
+    
     def add_serp_impression(self, serp_impression):
         """
-        Updates the SERP impression attribute.
+        Adds 1 to the relevant SERP impression counter.
         """
-        self._last_serp_impression = serp_impression
-        
-        if serp_impression.impression_judgement:
-            self._attractive_serp_impressions.append(serp_impression)
+        if serp_impression:
+            self._attractive_serp_count = self._attractive_serp_count + 1
         else:
-            self._unattractive_serp_impressions.append(serp_impression)
+            self._unattractive_serp_count = self._unattractive_serp_count + 1
     
-    def get_last_serp_impression(self):
+    def get_last_patch_type(self):
         """
-        Returns the last SERP impression judgement. If no previous query has been issued, None is returned.
+        Returns the last SERP patch type judgement.
+        If no queries have yet been issued, or no judgement has been made, None is returned.
         """
-        return self._last_serp_impression
-    
-    def get_session_query_count(self):
-        """
-        Returns the number of queries that have been issued in the simulated search session.
-        """
-        return len(self._issued_queries)
+        if len(self._issued_queries) == 0:
+            return None
+        
+        last_query = self.get_last_query()
+        
+        if hasattr(last_query, 'patch_type'):
+            return last_query.patch_type
+        
+        return None
     
     def get_last_query(self):
         """

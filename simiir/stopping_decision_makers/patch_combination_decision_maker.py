@@ -52,12 +52,10 @@ class PatchCombinationDecisionMaker(BaseDecisionMaker):
             PatchTypes.UNDEFINED        : self.__set_undefined,
         }
         
-        serp_impression = self._search_context.get_last_serp_impression()
+        judged_patch_type = self._search_context.get_last_patch_type()
         
-        if serp_impression is None:
+        if judged_patch_type is None:
             raise ValueError("No SERP has been yet examined. This exception shouldn't really happen.")
-        
-        judged_patch_type = serp_impression.patch_type
         
         # If the patch type currently doesn't match what we were looking at previously, switch the stopping strategy.
         if judged_patch_type != self.__last_patch_type:

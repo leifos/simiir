@@ -102,7 +102,7 @@ class RedisDataHandler(object):
         if key_prefix is None:
             raise ValueError("A key prefix (string) must be specified for the RedisDataHandler.")
         
-        key = '{key_prefix}::{hashed_key}'.format(key_prefix=key_prefix)
+        key = '{key_prefix}::{hashed_key}'.format(key_prefix=key_prefix, hashed_key=hash(key))
         cache = redis.StrictRedis(host=host, port=port, db=0)
         
         if cache.get(key):

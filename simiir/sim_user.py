@@ -120,7 +120,7 @@ class SimulatedUser(object):
             self.__search_context.add_issued_query(query_text)  # Can also supply page number and page lengths here.
             self.__logger.log_action(Actions.QUERY, query=query_text)
             self.__output_controller.log_query(query_text)
-
+            
             return True
         
         self.__output_controller.log_info(info_type="OUT_OF_QUERIES")
@@ -137,23 +137,18 @@ class SimulatedUser(object):
             self.__logger.log_action(Actions.SERP, status="EMPTY_SERP")
             return False  # No results present; return False (we don't continue with this SERP)
         
-        # Code updated on 2017-05-02 to consider an initial SERP impression.
-        self.__serp_impression.initialise()
-        serp_impression = self.__serp_impression.get_impression()  # Is the SERP attractive enough to look at?
-                                                                   # First value denotes this (boolean), second contains the patch type.
-        
-        is_serp_attractive = serp_impression.impression_judgement
-        serp_patch_type = serp_impression.patch_type
-        
-        # Add the SERP impression results to the search context.
-        self.__search_context.add_serp_impression(serp_impression)
+        # Code updates on 2017-09-28 for refactoring.
+        # Simplified this portion -- the SERP impression component now only returns a True/False value.
+        is_serp_attractive = self.__serp_impression.is_serp_attractive()
+        self.__search_context.add_serp_impression(is_serp_attractive)  # Update the search context.
         
         if is_serp_attractive:
-           self.__logger.log_action(Actions.SERP, status="EXAMINE_SERP")
+            self.__logger.log_action(Actions.SERP, status="EXAMINE_SERP")
         else:
-           self.__logger.log_action(Actions.SERP, status="IGNORE_SERP")
+            self.__logger.log_action(Actions.SERP, status="IGNORE_SERP")
         
         return is_serp_attractive
+    
     
     def __do_snippet(self):
         """
