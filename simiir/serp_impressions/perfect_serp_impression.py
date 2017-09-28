@@ -15,7 +15,7 @@ class PerfectSERPImpression(SimpleSERPImpression):
                  patch_type_threshold=0.6,
                  viewport_size=10,
                  viewport_precision_threshold=0.1):
-        super(StochasticSERPImpression, self).__init__(search_context=search_context,
+        super(PerfectSERPImpression, self).__init__(search_context=search_context,
                                                        topic=topic,
                                                        qrel_file=qrel_file,
                                                        host=host,
