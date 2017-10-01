@@ -1,9 +1,12 @@
 from random import Random
-from simiir.serp_impressions.simple_serp_impression import SimpleSERPImpression
+from simiir.serp_impressions.base_serp_impression import BaseSERPImpression
 
-class StochasticSERPImpression(SimpleSERPImpression):
+class StochasticSERPImpression(BaseSERPImpression):
     """
-    
+    An implementation of the SERP impression component that is stochastic.
+    Works out the judged precision. If the precision is less than a certain threshold,
+    we roll the dice (bad_abandon_probability) -- and if it is above, we also roll the
+    dice (good_abandon_probability).
     """
     def __init__(self,
                  search_context,
@@ -27,7 +30,7 @@ class StochasticSERPImpression(SimpleSERPImpression):
                                                        patch_type_threshold=patch_type_threshold,
                                                        viewport_size=viewport_size)
         
-        self.__good_abandon_probabilty = good_abandon_probability
+        self.__good_abandon_probability = good_abandon_probability
         self.__bad_abandon_probability = bad_abandon_probability
         self.__viewport_precision_threshold = viewport_precision_threshold
         
@@ -51,16 +54,28 @@ class StochasticSERPImpression(SimpleSERPImpression):
         judged_precision = sum(judgements) / float(len(judgements))
         die_roll = self.__random.random()
         
-        if judged_precision < self.__viewport_precision_threshold:
-            # Precision is less than the threshold, so we assume the SERP is of poor quality.
-            
-            if die_roll <= self.__bad_abandon_probability:
-                return False
-            else:
-                return True
+        # Work out whether the SERP should be considered attractive or not here.
+        threshold = self.__bad_abandon_probability
         
-        # If we get here, the precision is at or greater than the threshold, so we assume the SERP is "good".
-        if die_roll <= self.__good_abandon_probabilty:
+        if judged_precision >= self.__viewport_precision_threshold:
+            threshold = self.__good_abandon_probability
+        
+        if die_roll > threshold:
             return False
         
         return True
+        
+        # # Old code
+        # if judged_precision < self.__viewport_precision_threshold:
+        #     # Precision is less than the threshold, so we assume the SERP is of poor quality.
+        #
+        #     if die_roll <= self.__bad_abandon_probability:
+        #         return False
+        #     else:
+        #         return True
+        #
+        # # If we get here, the precision is at or greater than the threshold, so we assume the SERP is "good".
+        # if die_roll <= self.__good_abandon_probabilty:
+        #     return False
+        #
+        # return True

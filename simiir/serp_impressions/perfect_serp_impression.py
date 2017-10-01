@@ -1,7 +1,7 @@
 from simiir.search_interfaces import Document
-from simiir.serp_impressions.simple_serp_impression import SimpleSERPImpression
+from simiir.serp_impressions.base_serp_impression import BaseSERPImpression
 
-class PerfectSERPImpression(SimpleSERPImpression):
+class PerfectSERPImpression(BaseSERPImpression):
     """
     
     """
