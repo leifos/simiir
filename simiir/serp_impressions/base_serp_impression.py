@@ -10,13 +10,14 @@ class BaseSERPImpression(object):
     Contains the abstract signature for the is_serp_attractive() method.
     Also contains a concrete implementation to determine the patch quality, as per Stephen and Krebs (1986).
     """
-    def __init__(self, search_context, topic, qrel_file, host=None, port=None, dcg_discount=0.5, patch_type_threshold=0.6, viewport_size=10):
+    def __init__(self, search_context, topic, qrel_file, host=None, port=None):
         self._search_context = search_context
         self._topic = topic
         
-        self._dcg_discount = dcg_discount
-        self._patch_type_threshold = patch_type_threshold
-        self._viewport_size = viewport_size
+        # Default values - set as attributes in the coniguration to change these values.
+        self._dcg_discount = 0.5
+        self._patch_type_threshold = 0.6
+        self._viewport_size = 10
         
         self._qrel_data_handler = get_data_handler(filename=qrel_file, host=host, port=port, key_prefix='serpimpressions')
     

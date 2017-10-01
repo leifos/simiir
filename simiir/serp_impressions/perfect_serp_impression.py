@@ -11,18 +11,12 @@ class PerfectSERPImpression(BaseSERPImpression):
                  qrel_file,
                  host=None,
                  port=None,
-                 dcg_discount=0.5,
-                 patch_type_threshold=0.6,
-                 viewport_size=10,
                  viewport_precision_threshold=0.1):
         super(PerfectSERPImpression, self).__init__(search_context=search_context,
                                                        topic=topic,
                                                        qrel_file=qrel_file,
                                                        host=host,
-                                                       port=port,
-                                                       dcg_discount=dcg_discount,
-                                                       patch_type_threshold=patch_type_threshold,
-                                                       viewport_size=viewport_size)
+                                                       port=port)
         
         self.__viewport_precision_threshold = viewport_precision_threshold
     

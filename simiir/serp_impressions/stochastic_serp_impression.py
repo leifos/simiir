@@ -14,9 +14,6 @@ class StochasticSERPImpression(BaseSERPImpression):
                  qrel_file,
                  host=None,
                  port=None,
-                 dcg_discount=0.5,
-                 patch_type_threshold=0.6,
-                 viewport_size=10,
                  good_abandon_probability=0.5,
                  bad_abandon_probability=0.5,
                  base_seed=0,
@@ -25,10 +22,7 @@ class StochasticSERPImpression(BaseSERPImpression):
                                                        topic=topic,
                                                        qrel_file=qrel_file,
                                                        host=host,
-                                                       port=port,
-                                                       dcg_discount=dcg_discount,
-                                                       patch_type_threshold=patch_type_threshold,
-                                                       viewport_size=viewport_size)
+                                                       port=port)
         
         self.__good_abandon_probability = good_abandon_probability
         self.__bad_abandon_probability = bad_abandon_probability
