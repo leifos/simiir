@@ -80,7 +80,7 @@ class FileDataHandler(object):
         return val
 
 
-class RedisDataHandler(object):
+class RedisDataHandler(FileDataHandler):
     """
     Extends the FileDataHandler to consider a TrecQrelHandler object stored in
     a Redis cache. If it is found that a TrecQrelHandler object does not exist for
