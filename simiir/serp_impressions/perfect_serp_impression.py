@@ -3,17 +3,17 @@ from simiir.serp_impressions.base_serp_impression import BaseSERPImpression
 
 class PerfectSERPImpression(BaseSERPImpression):
     """
-    
+    A SERP impression component that has access to TREC QRELS.
+    From this information, the component is able to make a "perfect" judgement about the attractiveness of a SERP.
+    If the precision is above the specified precision threshold, then it is attractive; else it is unattractive.
     """
     def __init__(self,
                  search_context,
-                 topic,
                  qrel_file,
                  host=None,
                  port=None,
                  viewport_precision_threshold=0.1):
         super(PerfectSERPImpression, self).__init__(search_context=search_context,
-                                                       topic=topic,
                                                        qrel_file=qrel_file,
                                                        host=host,
                                                        port=port)

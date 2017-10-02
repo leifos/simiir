@@ -55,8 +55,7 @@ class UserComponentGenerator(BaseComponentGenerator):
         # Create the SERP impression component (used for some more advanced stopping models).
         self.serp_impression = self._get_object_reference(config_details=self._config_dict['serpImpression'],
                                                           package='serp_impressions',
-                                                          components=[('search_context', self.search_context),
-                                                                      ('topic', self.__simulation_components.topic)])
+                                                          components=[('search_context', self.search_context)])
     
     def prettify(self):
         """

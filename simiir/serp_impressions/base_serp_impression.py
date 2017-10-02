@@ -10,9 +10,8 @@ class BaseSERPImpression(object):
     Contains the abstract signature for the is_serp_attractive() method.
     Also contains a concrete implementation to determine the patch quality, as per Stephen and Krebs (1986).
     """
-    def __init__(self, search_context, topic, qrel_file, host=None, port=None):
+    def __init__(self, search_context, qrel_file, host=None, port=None):
         self._search_context = search_context
-        self._topic = topic
         
         # Default values - set as attributes in the coniguration to change these values.
         self._dcg_discount = 0.5
@@ -82,7 +81,7 @@ class BaseSERPImpression(object):
         
         for i in range(0, goto_depth):
             snippet = Document(results_list[i].whooshid, results_list[i].title, results_list[i].summary, results_list[i].docid)
-            judgement = self._qrel_data_handler.get_value_fallback(self._topic.id, results_list[i].docid)
+            judgement = self._qrel_data_handler.get_value_fallback(self._search_context.topic.id, results_list[i].docid)
             
             if judgement is None:  # Should not happen with a fallback topic; sanity check
                 judgement = 0

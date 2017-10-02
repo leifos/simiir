@@ -6,9 +6,8 @@ class SimpleSERPImpression(BaseSERPImpression):
     The de facto approach used in prior simulations; assume it's worth examining. Always return True.
     Also includes code to judge the patch type, a different thing from determining if the patch should be entered or not.
     """
-    def __init__(self, search_context, topic, qrel_file, host=None, port=None):
+    def __init__(self, search_context, qrel_file, host=None, port=None):
         super(SimpleSERPImpression, self).__init__(search_context=search_context,
-                                                 topic=topic,
                                                  qrel_file=qrel_file,
                                                  host=host,
                                                  port=port)

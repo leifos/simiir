@@ -10,7 +10,6 @@ class StochasticSERPImpression(BaseSERPImpression):
     """
     def __init__(self,
                  search_context,
-                 topic,
                  qrel_file,
                  host=None,
                  port=None,
@@ -19,7 +18,6 @@ class StochasticSERPImpression(BaseSERPImpression):
                  base_seed=0,
                  viewport_precision_threshold=0.1):
         super(StochasticSERPImpression, self).__init__(search_context=search_context,
-                                                       topic=topic,
                                                        qrel_file=qrel_file,
                                                        host=host,
                                                        port=port)
