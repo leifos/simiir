@@ -14,9 +14,9 @@ class BaseSERPImpression(object):
         self._search_context = search_context
         
         # Default values - set as attributes in the coniguration to change these values.
-        self._dcg_discount = 0.5
-        self._patch_type_threshold = 0.6
-        self._viewport_size = 10
+        self.dcg_discount = 0.5
+        self.patch_type_threshold = 0.6
+        self.viewport_size = 10
         
         self._qrel_data_handler = get_data_handler(filename=qrel_file, host=host, port=port, key_prefix='serpimpressions')
     
@@ -51,7 +51,7 @@ class BaseSERPImpression(object):
         dcg_values = []
         
         for i in range(0, len(snippet_judgements)):
-            dcg = snippet_judgements[i] * (1.0/(i+1)**self._dcg_discount)
+            dcg = snippet_judgements[i] * (1.0/(i+1)**self.dcg_discount)
             dcg_values.append(dcg)
         
         cumulative = numpy.cumsum(dcg_values)
@@ -60,7 +60,7 @@ class BaseSERPImpression(object):
         # Produce a ratio, comparing the area calculated above vs. the area under the "perfect" curve.
         area_normalised = area / calculate_maximum_area(no_snippets)
         
-        if area_normalised >= self._patch_type_threshold:
+        if area_normalised >= self.patch_type_threshold:
             return PatchTypes.EARLY_GAIN
         
         return PatchTypes.GRADUAL_INCREASE
@@ -72,7 +72,7 @@ class BaseSERPImpression(object):
         """
         results_len = self._search_context.get_current_results_length()
         results_list = self._search_context.get_current_results()
-        goto_depth = self._viewport_size
+        goto_depth = self.viewport_size
         
         if results_len < goto_depth:  # Sanity check -- what if the number of results is super small?
             goto_depth = results_len
