@@ -40,7 +40,7 @@ class PerfectSERPImpression(BaseSERPImpression):
         
         judged_precision = sum(judgements) / float(len(judgements))
         
-        if judged_precision < self.__viewport_precision_threshold:
+        if judged_precision <= self.__viewport_precision_threshold:
             # We have a poor quality SERP.
             return False
         
