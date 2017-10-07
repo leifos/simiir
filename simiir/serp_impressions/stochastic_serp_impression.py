@@ -49,7 +49,7 @@ class StochasticSERPImpression(BaseSERPImpression):
         # Work out whether the SERP should be considered attractive or not here.
         threshold = self.__bad_abandon_probability
         
-        if judged_precision >= self.__viewport_precision_threshold:
+        if judged_precision > self.__viewport_precision_threshold:
             threshold = self.__good_abandon_probability
         
         if die_roll > threshold:
