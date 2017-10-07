@@ -52,7 +52,7 @@ class StochasticSERPImpression(BaseSERPImpression):
         if judged_precision > self.__viewport_precision_threshold:
             threshold = self.__good_abandon_probability
         
-        if die_roll > threshold:
+        if die_roll < threshold:
             return False
         
         return True
