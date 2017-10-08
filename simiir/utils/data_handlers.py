@@ -99,14 +99,11 @@ class RedisDataHandler(FileDataHandler):
         key = os.path.split(filename)[-1] # Is there a better way to construct a unique key?
                                           # Perhaps take the hash *from the file contents*.
                                           # At present, the filename seems sufficient.
-        print(key)
+        
         if key_prefix is None:
             raise ValueError("A key prefix (string) must be specified for the RedisDataHandler.")
         
         key = '{key_prefix}::{hashed_key}'.format(key_prefix=key_prefix, hashed_key=hash(key))
-        
-        print(filename)
-        print(key)
         
         cache = redis.StrictRedis(host=host, port=port, db=0)
         
