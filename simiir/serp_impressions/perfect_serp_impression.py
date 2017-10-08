@@ -33,11 +33,6 @@ class PerfectSERPImpression(BaseSERPImpression):
         
         results_len = self._search_context.get_current_results_length()
         results_list = self._search_context.get_current_results()
-        goto_depth = self.viewport_size
-        
-        if results_len < goto_depth:  # Sanity check -- what if the SERP returned is super small?
-            goto_depth = results_len
-        
         judged_precision = sum(judgements) / float(len(judgements))
         
         if judged_precision <= self.__viewport_precision_threshold:
