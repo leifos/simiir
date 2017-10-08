@@ -83,7 +83,7 @@ class BaseSERPImpression(object):
         
         # Obtain a list of previously examined snippet docids from the search context for the search session.
         # This probably should be refactored in the future, so that the objects can be directly compared, not the docids.
-        previous_examined_snippets = [snippet.doc_id for snippet in self._search_context.get_all_examined_snippets()]
+        previously_examined_snippets = [snippet.doc_id for snippet in self._search_context.get_all_examined_snippets()]
         
         for i in range(0, goto_depth):
             snippet = Document(results_list[i].whooshid, results_list[i].title, results_list[i].summary, results_list[i].docid)
