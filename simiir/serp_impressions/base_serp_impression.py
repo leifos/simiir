@@ -88,15 +88,18 @@ class BaseSERPImpression(object):
             snippet = Document(results_list[i].whooshid, results_list[i].title, results_list[i].summary, results_list[i].docid)
             judgement = self._qrel_data_handler.get_value_fallback(self._search_context.topic.id, results_list[i].docid)
             
-            # If novel snippets only is enabled, and we've already seen this snippet, then we ignore it.
-            # Don't add it to the list of judgements; just skip over the entry and continue onwards.
-            if self.novel_snippets_only and results_list[i].docid in previous_examined_snippets:
-                continue
+            # Relevant and seen, not useful
+            # Relevant and unseen, useful
             
-            if judgement is None:  # Should not happen with a fallback topic; sanity check
+            if self.novel_snippets_only and results_list[i].docid in previously_examined_snippets:
+            # If we get here, novel snippets is enabled, and the snippet has been previously seen.
+            # We don't consider this useful.
                 judgement = 0
-            elif judgement > 1:
-                judgement = 1  # Easier to assume binary judgement assessments for now.
+            else:
+                if judgement is None:  # Should not happen with a fallback topic; sanity check
+                    judgement = 0
+                elif judgement > 1:
+                    judgement = 1  # Easier to assume binary judgement assessments for now.
             
             judgements.append(judgement)
         
