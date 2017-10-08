@@ -17,6 +17,7 @@ class BaseSERPImpression(object):
         self.dcg_discount = 0.5
         self.patch_type_threshold = 0.6
         self.viewport_size = 10
+        self.novel_snippets_only = False
         
         self._qrel_data_handler = get_data_handler(filename=qrel_file, host=host, port=port, key_prefix='serpimpressions')
     
@@ -77,11 +78,20 @@ class BaseSERPImpression(object):
         if results_len < goto_depth:  # Sanity check -- what if the number of results is super small?
             goto_depth = results_len
         
+        # List of our judgements.
         judgements = []
+        
+        # Obtain a list of previously examined snippet docids from the search context for the search session.
+        previous_examined_snippets = [snippet.doc_id for snippet in self._search_context.get_all_examined_snippets()]
         
         for i in range(0, goto_depth):
             snippet = Document(results_list[i].whooshid, results_list[i].title, results_list[i].summary, results_list[i].docid)
             judgement = self._qrel_data_handler.get_value_fallback(self._search_context.topic.id, results_list[i].docid)
+            
+            # If novel snippets only is enabled, and we've already seen this snippet, then we ignore it.
+            # Don't add it to the list of judgements; just skip over the entry and continue onwards.
+            if self.novel_snippets_only and results_list[i].docid in previous_examined_snippets:
+                continue
             
             if judgement is None:  # Should not happen with a fallback topic; sanity check
                 judgement = 0
