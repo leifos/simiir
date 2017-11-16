@@ -22,49 +22,81 @@ class BaseSERPImpression(object):
         self._qrel_data_handler = get_data_handler(filename=qrel_file, host=host, port=port, key_prefix='serpimpressions')
     
     
+    def __get_scores(self, judgements):
+        """
+        Calculates the score for a given set of judgements.
+        """
+        cumulative_sum = numpy.cumsum(judgements)
+        return sum(cumulative_sum)
+    
     def _calculate_patch_type(self, snippet_judgements=None):
         """
-        Given a series of snippet judgements (as an ordered list, with 1=relevant, 0=non-relevant), calculates the patch type, as per
-        Stephen and Krebs (1986), Section 8.3. To calculate how good the SERP is judged to appear, the area under the DCG curve is calculated.
-        This is done via integration along the y axis using the composite trapezoidal rule.
+        Given a series of snippet judgements (as an ordered list, with 1=relevant, 0=non-relevant), works out the
+        patch type as per Stephen and Krebs (1986), Section 8.3. To calculate how good a SERP is judged to appear,
+        we use the rate of gain per document -- up to the value of the viewport_size variable.
         
-        If the normalised area (with respect to a perfect DCG curve, where gain is extracted from every document) is equal to or above
-        a given threshold, the patch is considered a high yielding patch (early on). Otherwise, we consider it to be a gradually yielding patch.
+        We normalise the value between 0 and 1 by considering a set of judgements all set to 1 as the maximum, and
+        working out the normalised value for the given snippet judgements. Again, viewport_size is again used to work this out.
+        
+        Relevant documents at higher ranks have 
         
         This method can probably be spun out into a separate component in the future; for now, a single approach is sufficient.
         """
-        def calculate_maximum_area(snippet_judgements_length):
-            """
-            Given a length parameter, returns the maximum area under the curve if all documents up to
-            length snippet_judgements_length are judged to be relevant.
-            """
-            perfect_judgements = [1] * snippet_judgements_length
-            cumulative_perfect_judgements = numpy.cumsum(perfect_judgements)
-            return float(numpy.trapz(cumulative_perfect_judgements, dx=snippet_judgements_length))
-        
+        max_size = self.viewport_size
         
         if snippet_judgements is None or len(snippet_judgements) == 1:
             return PatchTypes.UNDEFINED
         
-        no_snippets = len(snippet_judgements)
+        if len(snippet_judgements) < max_size:
+            max_size = len(snippet_judgements)
         
-        # Calculate the DCG at each rank, with the DCG threshold specified.
-        dcg_values = []
+        perfect_judgements = [1] * max_size
+        perfect_score = self.__get_scores(perfect_judgements)
         
-        for i in range(0, len(snippet_judgements)):
-            dcg = snippet_judgements[i] * (1.0/(i+1)**self.dcg_discount)
-            dcg_values.append(dcg)
+        judgements_score = self.__get_scores(snippet_judgements)
+        normalised_score = float(judgements_score) / perfect_score
         
-        cumulative = numpy.cumsum(dcg_values)
-        area = numpy.trapz(cumulative, dx=no_snippets)
+        print normalised_score >= self.patch_type_threshold
         
-        # Produce a ratio, comparing the area calculated above vs. the area under the "perfect" curve.
-        area_normalised = area / calculate_maximum_area(no_snippets)
-        
-        if area_normalised >= self.patch_type_threshold:
+        if normalised_score >= self.patch_type_threshold:
             return PatchTypes.EARLY_GAIN
         
         return PatchTypes.GRADUAL_INCREASE
+        
+        # # Old code.
+        # # Used DCG and area under curves. The code above is more straightforward.
+        # def calculate_maximum_area(snippet_judgements_length):
+        #     """
+        #     Given a length parameter, returns the maximum area under the curve if all documents up to
+        #     length snippet_judgements_length are judged to be relevant.
+        #     """
+        #     perfect_judgements = [1] * snippet_judgements_length
+        #     cumulative_perfect_judgements = numpy.cumsum(perfect_judgements)
+        #     return float(numpy.trapz(cumulative_perfect_judgements, dx=snippet_judgements_length))
+        #
+        #
+        # if snippet_judgements is None or len(snippet_judgements) == 1:
+        #     return PatchTypes.UNDEFINED
+        #
+        # no_snippets = len(snippet_judgements)
+        #
+        # # Calculate the DCG at each rank, with the DCG threshold specified.
+        # dcg_values = []
+        #
+        # for i in range(0, len(snippet_judgements)):
+        #     dcg = snippet_judgements[i] * (1.0/(i+1)**self.dcg_discount)
+        #     dcg_values.append(dcg)
+        #
+        # cumulative = numpy.cumsum(dcg_values)
+        # area = numpy.trapz(cumulative, dx=no_snippets)
+        #
+        # # Produce a ratio, comparing the area calculated above vs. the area under the "perfect" curve.
+        # area_normalised = area / calculate_maximum_area(no_snippets)
+        #
+        # if area_normalised >= self.patch_type_threshold:
+        #     return PatchTypes.EARLY_GAIN
+        #
+        # return PatchTypes.GRADUAL_INCREASE
     
     
     def _get_patch_judgements(self):

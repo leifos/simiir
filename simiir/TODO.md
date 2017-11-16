@@ -1,0 +1,2 @@
+- for the SERP impression component, do not compute the patch type when a QRELs file is not specified. it should degrade gracefully.
+- when returning from a component back to the simulated user, we should return an object -- not just True/False. this will allow us to return additional information if necessary.
