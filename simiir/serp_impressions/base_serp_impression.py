@@ -56,8 +56,6 @@ class BaseSERPImpression(object):
         judgements_score = self.__get_scores(snippet_judgements)
         normalised_score = float(judgements_score) / perfect_score
         
-        print normalised_score >= self.patch_type_threshold
-        
         if normalised_score >= self.patch_type_threshold:
             return PatchTypes.EARLY_GAIN
         

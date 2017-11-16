@@ -29,6 +29,7 @@ class TimeSinceRelevancyDecisionMaker(BaseDecisionMaker):
             last_relevant_time = self._logger.get_last_relevant_snippet_time()
         
         last_interaction_time = self._logger.get_last_interaction_time()
+        
         difference = last_interaction_time - last_relevant_time
         
         if difference >= self.__timeout_threshold:
