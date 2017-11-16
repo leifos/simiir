@@ -29,7 +29,8 @@
 		<attribute name="relevance_revision" type="integer" value="1" is_argument="false" />
 	</searchContext>
 	
-	<serpImpression class="SimpleSERPImpression">
+		<serpImpression class="SimpleSERPImpression">
+		<attribute name="qrel_file" type="string" value="../example_data/qrels/trec2005.qrels.all" is_argument="true" />
 	</serpImpression>
 	
 </userConfiguration>
