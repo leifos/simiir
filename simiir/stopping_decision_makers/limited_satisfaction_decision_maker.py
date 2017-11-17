@@ -36,7 +36,10 @@ class LimitedSatisfactionDecisionMaker(SatisfactionDecisionMaker):
         relevant_count = self.__get_relevant_count()
         last_relevant_rank = self.__get_last_relevant_rank()
         
-        # On the first page of the SERP, if we find nothing relevant, we abandon the SERP.
+        # If we are on the first SERP page, return the satisfaction decision.
+        if serp_position < self.__serp_size:
+            return satisfaction_decision
+        # If by the end of the first SERP we have not found anything, we stop.
         if serp_position == self.__serp_size and relevant_count == 0:
             return Actions.QUERY
         # After the first SERP has been examined, switch back to a "frustration rule".
