@@ -35,7 +35,6 @@ class PatchCombinationSimplifiedDecisionMaker(BaseDecisionMaker):
         else:
             self.__set_time_limited()
         
-        print self.__strategy
         return self.__strategy.decide()
     
     
