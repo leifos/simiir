@@ -25,24 +25,24 @@ class WhooshSearchInterface(BaseSearchInterface):
         self.__redis_conn = None
         
         if host is None:
-            self.__engine = Whooshtrec(whoosh_index_dir=whoosh_index_dir, model=model, implicit_or=implicit_or)
+            self._engine = Whooshtrec(whoosh_index_dir=whoosh_index_dir, model=model, implicit_or=implicit_or)
         else:
-            self.__engine = Whooshtrec(whoosh_index_dir=whoosh_index_dir, model=model, implicit_or=implicit_or, cache='engine', host=host, port=port)
+            self._engine = Whooshtrec(whoosh_index_dir=whoosh_index_dir, model=model, implicit_or=implicit_or, cache='engine', host=host, port=port)
         
         # Update (2017-05-02) for snippet fragment tweaking.
         # SIGIR Study (2017) uses frag_type==1 (2 doesn't give sensible results), surround==40, snippet_sizes==2,0,1,4
-        self.__engine.snippet_size = frag_size
-        self.__engine.set_fragmenter(frag_type=frag_type, surround=frag_surround)
+        self._engine.snippet_size = frag_size
+        self._engine.set_fragmenter(frag_type=frag_type, surround=frag_surround)
         
         if pval:
-            self.__engine.set_model(model, pval)
+            self._engine.set_model(model, pval)
     
     def issue_query(self, query, top=100):
         """
         Allows one to issue a query to the underlying search engine. Takes an ifind Query object.
         """
         query.top = top
-        response = self.__engine.search(query)
+        response = self._engine.search(query)
         
         self._last_query = query
         self._last_response = response

@@ -240,6 +240,7 @@ class SearchContext(object):
             query_object = Query(query_text)
             query_object.skip = page
             query_object.top = page_len
+            query_object.topic = self.topic
             
             response = self._search_interface.issue_query(query_object)
             query_object.response = response
