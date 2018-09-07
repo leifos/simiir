@@ -30,10 +30,13 @@ class PatchCombinationSimplifiedDecisionMaker(BaseDecisionMaker):
         
         first_judgement = self.__qrels.get_value_fallback(topic_id, first_doc_id)
         
-        if first_judgement > 0:
-            self.__set_satisfaction()
-        else:
+        if self.__relevant_threshold == 0:
             self.__set_time_limited()
+        else:
+            if first_judgement > 0:
+                self.__set_satisfaction()
+            else:
+                self.__set_time_limited()
         
         return self.__strategy.decide()
     
